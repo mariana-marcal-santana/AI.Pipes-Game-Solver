@@ -57,8 +57,10 @@ class Board:
     def print(self):
         """ Imprime a grelha de PipeMania. """
         for row in self.board:
-            print(' '.join(row))
-
+            for column in row:
+                print(column)
+                print('\t')
+            print('\n')
             
     # TODO: outros metodos da classe
 
@@ -86,4 +88,4 @@ class PipeMania(Problem):
     def h(self, node: Node):
         """ Função heuristica utilizada para a procura A*. """
     # TODO
-    pass
+    pass # type: ignore
