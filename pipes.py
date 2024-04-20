@@ -1,6 +1,7 @@
 from search import Problem, Node
 from sys import stdin
 import numpy as np
+import sys
 
 class PipeManiaState:
     state_id = 0
@@ -15,6 +16,9 @@ class PipeManiaState:
 
 class Board:
 
+    def __init__(self, board: np.array):
+        self.board = board
+
     @staticmethod
     def parse_instance():
         
@@ -26,8 +30,6 @@ class Board:
         
         return Board(board)
 
-    def __init__(self, board: np.array):
-        self.board = board
 
     """ Representação interna de uma grelha de PipeMania. """
     def adjacent_vertical_values(self, row: int, col: int):
@@ -58,15 +60,15 @@ class Board:
         """ Imprime a grelha de PipeMania. """
         for row in self.board:
             for column in row:
-                print(column)
-                print('\t')
-            print('\n')
-            
+                print(column , end = "")
+                print('\t', end = "") 
+            print("\n",end = "")
+
     # TODO: outros metodos da classe
 
 
-
-Board.parse_instance()
+board = Board.parse_instance()
+board.print()
 
 class PipeMania(Problem):
     def __init__(self, initial_state: Board, goal_state: Board):
