@@ -15,6 +15,17 @@ class PipeManiaState:
 
 class Board:
 
+    @staticmethod
+    def parse_instance():
+        
+        board_list = []
+        for line in stdin:
+            board_list.append(line.split())
+
+        board = np.array(board_list)
+        
+        return Board(board)
+
     def __init__(self, board: np.array):
         self.board = board
 
@@ -31,18 +42,9 @@ class Board:
         pass
     # TODO: outros metodos da classe
 
-@staticmethod
-def parse_instance():
-    
-    board_list = []
-    for line in stdin:
-        board_list.append(line.split())
 
-    board = np.array(board_list)
-    
-    return Board(board)
 
-parse_instance()
+Board.parse_instance()
 
 class PipeMania(Problem):
     def __init__(self, initial_state: Board, goal_state: Board):
