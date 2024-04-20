@@ -33,13 +33,33 @@ class Board:
     def adjacent_vertical_values(self, row: int, col: int):
         """ Devolve os valores imediatamente acima e abaixo,
         respectivamente. """
-        # TODO
-        pass
+        if row == 0:
+            return (None, self.board[row + 1][col])
+        elif row == len(self.board) - 1:
+            return (self.board[row - 1][col], None)
+        else:
+            return (self.board[row - 1][col], self.board[row + 1][col])
+        
     def adjacent_horizontal_values(self, row: int, col: int):
         """ Devolve os valores imediatamente à esquerda e à direita,
         respectivamente. """
-        # TODO
-        pass
+        if col == 0:
+            return (None, self.board[row][col + 1])
+        elif col == len(self.board[0]) - 1:
+            return (self.board[row][col - 1], None)
+        else:
+            return (self.board[row][col - 1], self.board[row][col + 1])
+        
+    def get_value(self, row: int, col: int):
+        """ Devolve o valor presente na posição (row, col) da grelha. """
+        return self.board[row][col]
+    
+    def print(self):
+        """ Imprime a grelha de PipeMania. """
+        for row in self.board:
+            print(' '.join(row))
+
+            
     # TODO: outros metodos da classe
 
 
