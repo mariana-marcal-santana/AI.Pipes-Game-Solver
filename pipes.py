@@ -14,6 +14,10 @@ class PipeManiaState:
         return self.id < other.id
 
 class Board:
+
+    def __init__(self, board: np.array):
+        self.board = board
+
     """ Representação interna de uma grelha de PipeMania. """
     def adjacent_vertical_values(self, row: int, col: int):
         """ Devolve os valores imediatamente acima e abaixo,
@@ -29,23 +33,14 @@ class Board:
 
 @staticmethod
 def parse_instance():
-    """Lê a instância do problema do standard input (stdin)
-    e retorna uma instância da classe Board.
-    """
+    
     board_list = []
     for line in stdin:
-        parsed_line = line.split()
-        board_list.append(parsed_line)
+        board_list.append(line.split())
 
-    """
-    board_list =
-    [['FB', 'VC', 'VD'],
-    ['BC', 'BB', 'LV'],
-    ['FB', 'FB', 'FE']]
-    """
-
+    board = np.array(board_list)
     
-    pass
+    return Board(board)
 
 parse_instance()
 
