@@ -1,4 +1,6 @@
-from search import Problem, Node, State
+from search import Problem, Node
+from sys import stdin
+import numpy as np
 
 class PipeManiaState:
     state_id = 0
@@ -29,25 +31,35 @@ class Board:
 def parse_instance():
     """Lê a instância do problema do standard input (stdin)
     e retorna uma instância da classe Board.
-    Por exemplo:
-    $ python3 pipe_mania.py < input_T01
-    > from sys import stdin
-    > line = stdin.readline().split()
     """
-    # TODO
+    board_list = []
+    for line in stdin:
+        parsed_line = line.split()
+        board_list.append(parsed_line)
+
+    """
+    board_list =
+    [['FB', 'VC', 'VD'],
+    ['BC', 'BB', 'LV'],
+    ['FB', 'FB', 'FE']]
+    """
+
+    
     pass
+
+parse_instance()
 
 class PipeMania(Problem):
     def __init__(self, initial_state: Board, goal_state: Board):
         """ O construtor especifica o estado inicial. """
     # TODO
     pass
-    def actions(self, state: State):
+    def actions(self, state: PipeManiaState):
         """ Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento. """
     # TODO
     pass
-    def result(self, state: State, action):
+    def result(self, state: PipeManiaState, action):
         """ Retorna o estado resultante de executar a 'action' sobre
         'state' passado como argumento. A ação a executar deve ser uma
         das presentes na lista obtida pela execução de
