@@ -72,13 +72,13 @@ class Board:
         obj_up, obj_down = self.adjacent_vertical_values(row, col)
 
         # check objs on corners and make deductions
-        if row == 0 and col == 0 and not obj[0] == "VB":
+        if row == 0 and col == 0 and obj[0] == "V":
             self.board[row][col] = "VB"
-        elif row == 0 and col == self.board.n_cols - 1 and not obj[0] == "VE":
+        elif row == 0 and col == self.n_cols - 1 and obj[0] == "V":
             self.board[row][col] = "VE"
-        elif row == self.board.n_rows - 1 and col == 0 and not obj[0] == "VD":
+        elif row == self.n_rows - 1 and col == 0 and obj[0] == "V":
             self.board[row][col] = "VD"
-        elif row == self.board.n_rows - 1 and col == self.board.n_cols - 1 and not obj[0] == "VC":
+        elif row == self.n_rows - 1 and col == self.n_cols - 1 and obj[0] == "V":
             self.board[row][col] = "VC"
     
         # check objs on borders and make deductions 
@@ -117,14 +117,11 @@ class Board:
 
         return board_instance
 
-
-
-
 class PipeMania(Problem):
     def __init__(self, board: Board):
         """O construtor especifica o estado inicial."""
-        # TODO
-        pass
+        self.state = PipeManiaState(board)
+        super().__init__(self.state)
 
     def actions(self, state: PipeManiaState):
         """Retorna uma lista de ações que podem ser executadas a
