@@ -72,29 +72,47 @@ class Board:
         obj_up, obj_down = self.adjacent_vertical_values(row, col)
 
         # check objs on corners and make deductions
-        if row == 0 and col == 0 and obj[0] == "V":
+        if row == 0 and col == 0 and not obj[0] == "VB":
             self.board[row][col] = "VB"
-        elif row == 0 and col == board.n_cols - 1 and obj[0] == "V":
+        elif row == 0 and col == self.board.n_cols - 1 and not obj[0] == "VE":
             self.board[row][col] = "VE"
-        elif row == board.n_rows - 1 and col == 0 and obj[0] == "V":
+        elif row == self.board.n_rows - 1 and col == 0 and not obj[0] == "VD":
             self.board[row][col] = "VD"
-        elif row == board.n_rows - 1 and col == board.n_cols - 1 and obj[0] == "V":
+        elif row == self.board.n_rows - 1 and col == self.board.n_cols - 1 and not obj[0] == "VC":
             self.board[row][col] = "VC"
-
-        # check objs on borders and make deductions
-        elif col != 0 and col != board.n_cols - 1 and obj[0] and (row == 0 or row == board.n_rows - 1):
-            self.board[row][col] = "LH"
-        elif row != 0 and row != board.n_rows - 1 and obj[0] and (col == 0 or col == board.n_cols - 1):
-            self.board[row][col] = "LV"
-
-
+    
+        # check objs on borders and make deductions 
+        # if obj is a straith pipe
+        if obj[0] == "L" :
+            if (row == 0 and obj == "LH") or (row == self.board.n_rows - 1 and obj == "LH") :
+                self.board[row][col] = "LV" 
+            elif (col == 0 and obj == "LV") or (col == self.board.n_cols - 1 and obj == "LV") :
+                self.board[row][col] = "LH"
+        
+        # if obj is a bifurcation pipe
+        elif obj[1] == "B":
+            if (row == 0 and not obj == "BB") :
+                self.board[row][col] = "BB"
+            elif (row == self.board.n_rows - 1 and not obj == "BC") :
+                self.board[row][col] = "BC"
+            elif (col == 0 and not obj == "BD") :
+                self.board[row][col] = "BD"
+            elif (col == self.board.n_cols - 1 and not obj == "BE") :
+                self.board[row][col] = "BE"
+        
     def run_deductions(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
-                Board.get_deductions(self, i, j)
-
-
-
+                # check if obj is a corner
+                if (i == 0 and j == 0) \
+                    or (i == 0 and j == len(self.board[i]) - 1) \
+                    or (i == len(self.board) - 1 and j == 0) \
+                    or (i == len(self.board) - 1 and j == len(self.board[i]) - 1):
+                    Board.get_deductions(self, i, j)
+                # check if obj is on a border
+                elif i == 0 or i == len(self.board) - 1 or j == 0 or j == len(self.board[i]) - 1:
+                    Board.get_deductions(self, i, j)
+            
     @staticmethod
     def parse_instance():
         
