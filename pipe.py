@@ -1,14 +1,9 @@
-# pipe.py: Template para implementação do projeto de Inteligência Artificial 2023/2024.
-# Devem alterar as classes e funções neste ficheiro de acordo com as instruções do enunciado.
-# Além das funções e classes sugeridas, podem acrescentar outras que considerem pertinentes.
-
-# Grupo 00:
-# 00000 Nome1
-# 00000 Nome2
+# Grupo 25:
+# 106992 Mariana Santana
+# 106221 João Rodrigues
 
 from sys import stdin
 import numpy as np
-import sys
 from search import (
     Problem,
     Node,
