@@ -83,9 +83,9 @@ class Board:
     
         # check objs on borders and make deductions 
         # if obj is a straith pipe
-        elif obj[0] == "L" and (row == 0 or row == board.n_rows - 1):
+        elif obj[0] == "L" and (row == 0 or row == self.n_rows - 1):
             self.board[row][col] = "LH"
-        elif obj[0] == "L" and (col == 0 or col == board.n_cols - 1):
+        elif obj[0] == "L" and (col == 0 or col == self.n_cols - 1):
             self.board[row][col] = "LV"
         # if obj is a bifurcation pipe
         elif obj[0] == "B" and row == 0:
@@ -100,7 +100,7 @@ class Board:
     def run_deductions(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
-                if (i == 0 or i == self.n_rows - 1) and (j == 0 or j == self.n_cols - 1):
+                if (i == 0 or i == self.n_rows - 1) or (j == 0 or j == self.n_cols - 1):
                     self.get_deductions(i, j)
             
     @staticmethod
@@ -160,8 +160,6 @@ class PipeMania(Problem):
 if __name__ == "__main__":
     board = Board.parse_instance()
     board.print()
-    pipe_mania = PipeMania(board)
-    pipe_mania.goal_test()
     # TODO:
     # Ler o ficheiro do standard input,
     # Usar uma técnica de procura para resolver a instância,
