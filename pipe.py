@@ -27,20 +27,10 @@ class PipeManiaState:
 
 class Board:
 
-    def __init__(self, board: np.array):
+    def __init__(self, board: np.array, n_rows: int, n_cols: int):
         self.board = board
-
-    @staticmethod
-    def parse_instance():
-        
-        board_list = []
-        for line in stdin:
-            board_list.append(line.split())
-
-        board = np.array(board_list)
-        
-        return Board(board)
-
+        self.n_rows = n_rows
+        self.n_cols = n_cols
 
     """ Representação interna de uma grelha de PipeMania. """
     def adjacent_vertical_values(self, row: int, col: int):
@@ -75,11 +65,52 @@ class Board:
                 print('\t', end = "") 
             print("\n",end = "")
 
-    # TODO: outros metodos da classe
+    def get_deductions(self, row: int, col: int):
+
+        obj = self.board[row][col]
+        obj_left, ob_right = self.adjacent_horizontal_values(row, col)
+        obj_up, obj_down = self.adjacent_vertical_values(row, col)
+
+        # check objs on corners and make deductions
+        if row == 0 and col == 0 and obj[0] == "V":
+            self.board[row][col] = "VB"
+        elif row == 0 and col == board.n_cols - 1 and obj[0] == "V":
+            self.board[row][col] = "VE"
+        elif row == board.n_rows - 1 and col == 0 and obj[0] == "V":
+            self.board[row][col] = "VD"
+        elif row == board.n_rows - 1 and col == board.n_cols - 1 and obj[0] == "V":
+            self.board[row][col] = "VC"
+
+        # check objs on borders and make deductions
+        elif col != 0 and col != board.n_cols - 1 and obj[0] and (row == 0 or row == board.n_rows - 1):
+            self.board[row][col] = "LH"
+        elif row != 0 and row != board.n_rows - 1 and obj[0] and (col == 0 or col == board.n_cols - 1):
+            self.board[row][col] = "LV"
 
 
-board = Board.parse_instance()
-board.print()
+    def run_deductions(self):
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                Board.get_deductions(self, i, j)
+
+
+
+    @staticmethod
+    def parse_instance():
+        
+        board_list = []
+        for line in stdin:
+            board_list.append(line.split())
+
+        board = np.array(board_list)
+        board_instance = Board(board, len(board), len(board[0]))
+
+        board_instance.run_deductions()
+
+        return board_instance
+
+
+
 
 class PipeMania(Problem):
     def __init__(self, board: Board):
@@ -117,6 +148,8 @@ class PipeMania(Problem):
 
 
 if __name__ == "__main__":
+    board = Board.parse_instance()
+    board.print()
     # TODO:
     # Ler o ficheiro do standard input,
     # Usar uma técnica de procura para resolver a instância,
