@@ -90,11 +90,11 @@ class Board:
         # if obj is a bifurcation pipe
         elif obj[0] == "B" and row == 0:
             self.board[row][col] = "BB"
-        elif obj[0] == "B" and row == self.board.n_rows - 1:
+        elif obj[0] == "B" and row == self.n_rows - 1:
             self.board[row][col] = "BC"
         elif obj[0] == "B" and col == 0:
             self.board[row][col] = "BD"
-        elif obj[0] == "B" and col == self.board.n_cols - 1:
+        elif obj[0] == "B" and col == self.n_cols - 1:
             self.board[row][col] = "BE"
         
     def run_deductions(self):
@@ -141,8 +141,13 @@ class PipeMania(Problem):
         """Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se todas as posições do tabuleiro
         estão preenchidas de acordo com as regras do problema."""
-        # TODO
-        pass
+        connections = []
+
+        for i in range(len(self.state.board)):
+            print(1)
+
+
+        return len(connections) == 0
 
     def h(self, node: Node):
         """Função heuristica utilizada para a procura A*."""
@@ -155,6 +160,8 @@ class PipeMania(Problem):
 if __name__ == "__main__":
     board = Board.parse_instance()
     board.print()
+    pipe_mania = PipeMania(board)
+    pipe_mania.goal_test()
     # TODO:
     # Ler o ficheiro do standard input,
     # Usar uma técnica de procura para resolver a instância,
