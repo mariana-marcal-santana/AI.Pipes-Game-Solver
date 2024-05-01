@@ -221,17 +221,38 @@ class PipeMania(Problem):
                 obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
 
                 if obj == "FC":
-                    if ((obj_left not in [None, "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in [None, "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LH"]) or \
+                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
                         (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "FB":
-                    if ((obj_left not in [None, "FC", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in [None, "FC", "FD", "BD", "VB", "VD", "LV"]) or \
+                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
                         (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
                         (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LH"])):
                         return False
+                elif obj == "FE":
+                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
+                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in [None, "FE", "FC", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
+                        return False
+                elif obj == "FD":
+                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in [None, "FE", "FB", "FD", "BB", "VB", "VE", "LH"])):
+                        return False
+                elif obj == "BC":
+                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
+                        return False
+                
+                    
+                
 
 
 
@@ -249,8 +270,6 @@ class PipeMania(Problem):
                     obj_left, obj_right = self.state.board.adjacent_horizontal_values(row, col)
                     obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
                 """
-                    
-
         return True
 
     def h(self, node: Node):
