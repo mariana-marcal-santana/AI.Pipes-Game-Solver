@@ -70,6 +70,7 @@ class Board:
         obj = self.board[row][col]
         obj_left, ob_right = self.adjacent_horizontal_values(row, col)
         obj_up, obj_down = self.adjacent_vertical_values(row, col)
+        print(obj, obj_left, ob_right, obj_up, obj_down)
 
         # check objs on corners and make deductions
         if row == 0 and col == 0 and obj[0] == "V":
@@ -97,6 +98,34 @@ class Board:
         elif obj[0] == "B" and col == self.n_cols - 1:
             self.board[row][col] = "BE"
         
+        # if obj is a close pipe
+
+        elif obj[0] == "F" and (row == 0 or row == self.n_rows - 1) \
+            and (obj_left[0]== "L" or obj_left[0]=="B"):
+            self.board[row][col] = "FE"
+        elif obj[0] == "F" and (row == 0 or row == self.n_cols - 1) \
+            and (ob_right[0]== "L" or ob_right[0]=="B"):
+            self.board[row][col] = "FD"
+        elif obj[0] == "F" and (col == 0 or col == self.n_cols - 1) \
+            and (obj_up[0]== "L" or obj_up[0]=="B"):
+            self.board[row][col] = "FC"
+        elif obj[0] == "F" and (col == 0 or col == self.n_cols - 1) \
+            and (obj_down[0]== "L" or obj_down[0]=="B"):
+            self.board[row][col] = "FB"
+        
+        elif obj[0] == "F" and ((row == 0 and col == 1) or (row == self.n_rows - 1 and col == 1)) \
+            and (obj_left[0]== "L" ):
+            self.board[row][col] = "FE"
+        elif obj[0] == "F" and ((row == 0 and col == self.n_cols - 2) or (row == self.n_rows - 1 and col == self.n_cols - 2)) \
+            and (ob_right[0]== "L"):
+            self.board[row][col] = "FD"
+        elif obj[0] == "F" and ((col == 0 and row == 1) or (col == self.n_cols - 1 and row == 1)) \
+            and (obj_up[0]== "L"):
+            self.board[row][col] = "FC"
+        elif obj[0] == "F" and ((col == 0 and row == self.n_rows - 2) or (col == self.n_cols - 1 and row == self.n_rows - 2)) \
+            and (obj_down[0]== "L"):
+            self.board[row][col] = "FB"
+    
     def run_deductions(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
