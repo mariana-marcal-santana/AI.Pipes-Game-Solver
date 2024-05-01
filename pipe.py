@@ -250,26 +250,28 @@ class PipeMania(Problem):
                         (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
                         (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
+                elif obj == "BB":
+                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
+                        return False
+                elif obj == "BE":
                 
-                    
+                elif obj == "BD":
+
+                elif obj == "VC":
+
+                elif obj == "VB":
+
+                elif obj == "VE":
+
+                elif obj == "VD":
                 
+                elif obj == "LH":
 
+                elif obj == "LV":           
 
-
-                """
-                obj = self.state.board.get_value(row,col)
-                if row == 0 and obj in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"]:
-                    return False
-                elif row == self.state.n_rows - 1 and obj in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]:
-                    return False
-                elif col == 0 and obj in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]:
-                    return False
-                elif col == self.state.n_cols - 1 and obj in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]:
-                    return False
-                else:
-                    obj_left, obj_right = self.state.board.adjacent_horizontal_values(row, col)
-                    obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
-                """
         return True
 
     def h(self, node: Node):
