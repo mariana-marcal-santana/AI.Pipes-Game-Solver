@@ -212,13 +212,46 @@ class PipeMania(Problem):
         """Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se todas as posições do tabuleiro
         estão preenchidas de acordo com as regras do problema."""
-        connections = []
 
-        for i in range(len(self.state.board)):
-            print(1)
+        for row in range(self.state.n_rows):
+            for col in range(self.state.n_cols):
+
+                obj = self.state.board.get_value(row,col)
+                obj_left, obj_right = self.state.board.adjacent_horizontal_values(row, col)
+                obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
+
+                if obj == "FC":
+                    if ((obj_left not in [None, "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in [None, "FB", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LH"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
+                        return False
+                elif obj == "FB":
+                    if ((obj_left not in [None, "FC", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in [None, "FC", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LH"])):
+                        return False
 
 
-        return len(connections) == 0
+
+                """
+                obj = self.state.board.get_value(row,col)
+                if row == 0 and obj in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"]:
+                    return False
+                elif row == self.state.n_rows - 1 and obj in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]:
+                    return False
+                elif col == 0 and obj in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]:
+                    return False
+                elif col == self.state.n_cols - 1 and obj in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]:
+                    return False
+                else:
+                    obj_left, obj_right = self.state.board.adjacent_horizontal_values(row, col)
+                    obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
+                """
+                    
+
+        return True
 
     def h(self, node: Node):
         """Função heuristica utilizada para a procura A*."""
