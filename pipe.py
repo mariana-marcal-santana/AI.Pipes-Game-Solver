@@ -37,40 +37,51 @@ class Board:
         """ Devolve os valores imediatamente acima e abaixo,
         respectivamente. """
         if row == 0:
-            return (None, self.board[row + 1][col])
+            return (None, self.board[row + 1][col][0])
         elif row == len(self.board) - 1:
-            return (self.board[row - 1][col], None)
+            return (self.board[row - 1][col][0], None)
         else:
-            return (self.board[row - 1][col], self.board[row + 1][col])
+            return (self.board[row - 1][col][0], self.board[row + 1][col][0])
         
     def adjacent_horizontal_values(self, row: int, col: int):
         """ Devolve os valores imediatamente à esquerda e à direita,
         respectivamente. """
         if col == 0:
-            return (None, self.board[row][col + 1])
+            return (None, self.board[row][col + 1][0])
         elif col == len(self.board[0]) - 1:
-            return (self.board[row][col - 1], None)
+            return (self.board[row][col - 1][0], None)
         else:
-            return (self.board[row][col - 1], self.board[row][col + 1])
+            return (self.board[row][col - 1][0], self.board[row][col + 1][0])
         
     def get_value(self, row: int, col: int):
         """ Devolve o valor presente na posição (row, col) da grelha. """
+        return self.board[row][col][0]
+    
+    def get_piece(self, row: int, col: int):
+        """ Devolve a peça presente na posição (row, col) da grelha. """
         return self.board[row][col]
     
-    def print(self):
+    def print_test(self):
         """ Imprime a grelha de PipeMania. """
         for row in self.board:
             for column in row:
                 print(column , end = "")
                 print('\t', end = "") 
             print("\n",end = "")
-
+    def print(self):
+        """ Imprime a grelha de PipeMania. """
+        for row in self.board:
+            for column in row:
+                print(column[0], end = "")
+                print('\t', end = "") 
+            print("\n",end = "")
+        
     def get_deductions(self, row: int, col: int):
 
         obj = self.board[row][col]
         obj_left, obj_right = self.adjacent_horizontal_values(row, col)
         obj_up, obj_down = self.adjacent_vertical_values(row, col)
-        
+        print(obj, obj_left, obj_right, obj_up, obj_down)
         if obj_left == None:
             obj_left = " "
         if obj_right == None:
@@ -81,92 +92,120 @@ class Board:
             obj_down = " "
             
         # check objs on corners and turn pipes and make deductions
-        if obj[0] == "V" :
+        if obj[0][0] == "V" :
             if row == 0 and col == 0 :
-                self.board[row][col] = "VB"
+                self.board[row][col][0] = "VB"
+                self.board[row][col][1] = 0
             elif row == 0 and col == self.n_cols - 1 :
-                self.board[row][col] = "VE"
+                self.board[row][col][0] = "VE"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 1 and col == 0 :
-                self.board[row][col] = "VD"
+                self.board[row][col][0] = "VD"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 1 and col == self.n_cols - 1 :
-                self.board[row][col] = "VC"
-            
+                self.board[row][col][0] = "VC"
+                self.board[row][col][1] = 0
+
             elif row == 0 and col == 1 and obj_left[0] == "V":
-                self.board[row][col] = "VE"
+                self.board[row][col][0] = "VE"
+                self.board[row][col][1] = 0
             elif row == 0 and col == self.n_cols - 2 and obj_right[0] == "V":
-                self.board[row][col] = "VB"
+                self.board[row][col][0] = "VB"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 1 and col == 1 and obj_left[0] == "V":
-                self.board[row][col] = "VC"
+                self.board[row][col][0] = "VC"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 1 and col == self.n_cols - 2 and obj_right[0] == "V":
-                self.board[row][col] = "VD"
+                self.board[row][col][0] = "VD"
+                self.board[row][col][1] = 0
             elif row == 1 and col == 0 and obj_up[0] == "V":
-                self.board[row][col] = "VD"
+                self.board[row][col][0] = "VD"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 2 and col == 0 and obj_down[0] == "V":
-                self.board[row][col] = "VB"
+                self.board[row][col][0] = "VB"
+                self.board[row][col][1] = 0
             elif row == 1 and col == self.n_cols - 1 and obj_up[0] == "V":
-                self.board[row][col] = "VC"
+                self.board[row][col][0] = "VC"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 2 and col == self.n_cols - 1 and obj_down[0] == "V":
-                self.board[row][col] = "VE"
+                self.board[row][col][0] = "VE"
+                self.board[row][col][1] = 0
             
         # check objs on borders and make deductions 
         # if obj is a straith pipe
-        elif obj[0] == "L":
+        elif obj[0][0] == "L":
             if  (row == 0 or row == self.n_rows - 1):
-                self.board[row][col] = "LH"
+                self.board[row][col][0] = "LH"
+                self.board[row][col][1] = 0
             elif (col == 0 or col == self.n_cols - 1):
-                self.board[row][col] = "LV"
+                self.board[row][col][0] = "LV"
+                self.board[row][col][1] = 0
         # if obj is a bifurcation pipe
 
-        elif obj[0] == "B":
+        elif obj[0][0] == "B":
             if row == 0:
-                self.board[row][col] = "BB"
+                self.board[row][col][0] = "BB"
+                self.board[row][col][1] = 0
             elif row == self.n_rows - 1:
-                self.board[row][col] = "BC"
+                self.board[row][col][0] = "BC"
+                self.board[row][col][1] = 0
             elif col == 0:
-                self.board[row][col] = "BD"
+                self.board[row][col][0] = "BD"
+                self.board[row][col][1] = 0
             elif col == self.n_cols - 1:
-                self.board[row][col] = "BE"
+                self.board[row][col][0] = "BE"
+                self.board[row][col][1] = 0
         
         # if obj is a close pipe
-        elif obj[0] == "F":
+        elif obj[0][0] == "F":
             if (row == 0 or row == self.n_rows - 1) \
-                and (obj_left[0]== "L" or obj_left[0]=="B"):
-                self.board[row][col] = "FE"
+                and (obj_left[0] == "L" or obj_left[0] =="B"):
+                self.board[row][col][0] = "FE"
+                self.board[row][col][1] = 0
             elif (row == 0 or row == self.n_cols - 1) \
-                and (obj_right[0]== "L" or obj_right[0]=="B"):
-                self.board[row][col] = "FD"
+                and (obj_right[0] == "L" or obj_right[0] =="B"):
+                self.board[row][col][0] = "FD"
+                self.board[row][col][1] = 0
             elif (col == 0 or col == self.n_cols - 1) \
-                and (obj_up[0]== "L" or obj_up[0]=="B"):
-                self.board[row][col] = "FC"
+                and (obj_up[0] == "L" or obj_up[0] =="B"):
+                self.board[row][col][0] = "FC"
+                self.board[row][col][1] = 0
             elif (col == 0 or col == self.n_cols - 1) \
-                and (obj_down[0]== "L" or obj_down[0]=="B"):
-                self.board[row][col] = "FB"
+                and (obj_down[0] == "L" or obj_down[0] =="B"):
+                self.board[row][col][0] = "FB"
+                self.board[row][col][1] = 0
         
             elif ((row == 0 and col == 1) or (row == self.n_rows - 1 and col == 1)) \
-                and (obj_left[0]== "L" ):
-                self.board[row][col] = "FE"
+                and (obj_left[0] == "L" ):
+                self.board[row][col][0] = "FE"
+                self.board[row][col][1] = 0
             elif ((row == 0 and col == self.n_cols - 2) or (row == self.n_rows - 1 and col == self.n_cols - 2)) \
-                and (obj_right[0]== "L"):
-                self.board[row][col] = "FD"
+                and (obj_right[0] == "L"):
+                self.board[row][col][0] = "FD"
+                self.board[row][col][1] = 0
             elif ((col == 0 and row == 1) or (col == self.n_cols - 1 and row == 1)) \
-                and (obj_up[0]== "L"):
-                self.board[row][col] = "FC"
+                and (obj_up[0] == "L"):
+                self.board[row][col][0] = "FC"
+                self.board[row][col][1] = 0
             elif ((col == 0 and row == self.n_rows - 2) or (col == self.n_cols - 1 and row == self.n_rows - 2)) \
-                and (obj_down[0]== "L"):
-                self.board[row][col] = "FB"
+                and (obj_down[0] == "L"):
+                self.board[row][col][0] = "FB"
+                self.board[row][col][1] = 0
 
-            elif (obj_left[0]== "F" and obj_right[0]== "F"):
+            elif (obj_left[0] == "F" and obj_right[0] == "F"):
                 if (row == 0):
-                    self.board[row][col] = "FB"
+                    self.board[row][col][0] = "FB"
+                    self.board[row][col][1] = 0
                 elif (row == self.n_rows - 1):
-                    self.board[row][col] = "FC"
-            elif (obj_up[0]== "F" and obj_down[0]== "F"):
+                    self.board[row][col][0] = "FC"
+                    self.board[row][col][1] = 0
+            elif (obj_up[0] == "F" and obj_down[0] == "F"):
                 if (col == 0):
-                    self.board[row][col] = "FE"
+                    self.board[row][col][0] = "FE"
+                    self.board[row][col][1] = 0
                 elif (col == self.n_cols - 1):
-                    self.board[row][col] = "FD"
-    
-            
+                    self.board[row][col][0] = "FD"
+                    self.board[row][col][1] = 0
     
     def run_deductions(self):
         for i in range(len(self.board)):
@@ -179,7 +218,7 @@ class Board:
         
         board_list = []
         for line in stdin:
-            board_list.append(line.split())
+            board_list.append([[word, 1] for word in line.split()])
 
         board = np.array(board_list)
         board_instance = Board(board, len(board), len(board[0]))
@@ -197,9 +236,43 @@ class PipeMania(Problem):
     def actions(self, state: PipeManiaState):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
-        # TODO
-        pass
-
+        actions = []
+        
+        for row in range(self.state.n_rows):
+            for col in range(self.state.n_cols):
+                if self.state.board.get_piece(row, col)[1] == 0:
+                    continue
+                elif self.state.board.get_piece(row, col)[0] == "FC":
+                    actions += [(row, col, "FB"), (row, col, "FE"), (row, col, "FD")]
+                elif self.state.board.get_piece(row, col)[0] == "FB":
+                    actions += [(row, col, "FC"), (row, col, "FE"), (row, col, "FD")]
+                elif self.state.board.get_piece(row, col)[0] == "FE":
+                    actions += [(row, col, "FC"), (row, col, "FB"), (row, col, "FD")]
+                elif self.state.board.get_piece(row, col)[0] == "FD":
+                    actions += [(row, col, "FC"), (row, col, "FB"), (row, col, "FE")]
+                elif self.state.board.get_piece(row, col)[0] == "BC":
+                    actions += [(row, col, "BB"), (row, col, "BE"), (row, col, "BD")]
+                elif self.state.board.get_piece(row, col)[0] == "BB":
+                    actions += [(row, col, "BC"), (row, col, "BE"), (row, col, "BD")]
+                elif self.state.board.get_piece(row, col)[0] == "BE":
+                    actions += [(row, col, "BC"), (row, col, "BB"), (row, col, "BD")]
+                elif self.state.board.get_piece(row, col)[0] == "BD":
+                    actions += [(row, col, "BC"), (row, col, "BB"), (row, col, "BE")]
+                elif self.state.board.get_piece(row, col)[0] == "VC":
+                    actions += [(row, col, "VB"), (row, col, "VE"), (row, col, "VD")]
+                elif self.state.board.get_piece(row, col)[0] == "VB":
+                    actions += [(row, col, "VC"), (row, col, "VE"), (row, col, "VD")]
+                elif self.state.board.get_piece(row, col)[0] == "VE":
+                    actions += [(row, col, "VC"), (row, col, "VB"), (row, col, "VD")]
+                elif self.state.board.get_piece(row, col)[0] == "VD":
+                    actions += [(row, col, "VC"), (row, col, "VB"), (row, col, "VE")]
+                elif self.state.board.get_piece(row, col)[0] == "LH":
+                    actions += [(row, col, "LV")]
+                elif self.state.board.get_piece(row, col)[0] == "LV":
+                    actions += [(row, col, "LH")]
+        
+        return actions
+        
     def result(self, state: PipeManiaState, action):
         """Retorna o estado resultante de executar a 'action' sobre
         'state' passado como argumento. A ação a executar deve ser uma
