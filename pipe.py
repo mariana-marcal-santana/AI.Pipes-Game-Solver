@@ -293,10 +293,13 @@ class PipeMania(Problem):
                         (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "LH":
-                    if (()):
+                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "LV": 
-                    if (()):
+                    if ((obj_left not in [None, ])):
                         return False          
 
         return True
