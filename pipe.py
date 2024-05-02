@@ -269,16 +269,28 @@ class PipeMania(Problem):
                         (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
                         return False
                 elif obj == "VC":
-                    if (()):
+                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
+                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "VB":
-                    if (()):
+                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
                         return False
                 elif obj == "VE":
-                    if (()):
+                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
+                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
+                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
+                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
                         return False
                 elif obj == "VD":
-                    if (()):
+                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
+                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
+                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
+                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "LH":
                     if (()):
@@ -294,15 +306,12 @@ class PipeMania(Problem):
         # TODO
         pass
 
-    # TODO: outros metodos da classe
-
-
 if __name__ == "__main__":
+
     board = Board.parse_instance()
     board.print()
-    # TODO:
-    # Ler o ficheiro do standard input,
-    # Usar uma técnica de procura para resolver a instância,
-    # Retirar a solução a partir do nó resultante,
-    # Imprimir para o standard output no formato indicado.
-    pass
+
+    problem = PipeMania(board)
+    
+    # goal = astar_search(problem) #????
+
