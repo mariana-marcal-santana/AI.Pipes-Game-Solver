@@ -34,7 +34,7 @@ class Board:
         self.n_rows = n_rows
         self.n_cols = n_cols
 
-    def copyBoard(self):
+    def copy_board(self):
         return Board(np.copy(board), self.n_rows, self.n_cols)
     
     """ Representação interna de uma grelha de PipeMania. """
@@ -283,8 +283,12 @@ class PipeMania(Problem):
         'state' passado como argumento. A ação a executar deve ser uma
         das presentes na lista obtida pela execução de
         self.actions(state)."""
-        # TODO
-        pass
+        
+        row, col, piece = action
+        new_board = Board.copy_board(state.board)
+        new_board.board[row][col][0] = piece
+    
+        return new_board
 
     def goal_test(self, state: PipeManiaState):
         """Retorna True se e só se o estado passado como argumento é
