@@ -3,6 +3,8 @@
 # 106221 João Rodrigues
 
 from sys import stdin
+
+
 import numpy as np
 from search import (
     Problem,
@@ -32,6 +34,9 @@ class Board:
         self.n_rows = n_rows
         self.n_cols = n_cols
 
+    def copyBoard(self):
+        return Board(np.copy(board), self.n_rows, self.n_cols)
+    
     """ Representação interna de uma grelha de PipeMania. """
     def adjacent_vertical_values(self, row: int, col: int):
         """ Devolve os valores imediatamente acima e abaixo,
