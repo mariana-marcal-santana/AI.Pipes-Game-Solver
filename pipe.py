@@ -247,39 +247,37 @@ class PipeMania(Problem):
         
         for row in range(self.state.board.n_rows):
             for col in range(self.state.board.n_cols):
-                #print("Row: ", row, "Col: ", col)
+                
                 if self.state.board.get_piece(row, col)[1] == '0':
-                    #print("Piece already placed")
                     continue
                 elif self.state.board.get_piece(row, col)[0] == "FC":
-                    actions += [(row, col, "FB"), (row, col, "FE"), (row, col, "FD")]
+                    actions += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
                 elif self.state.board.get_piece(row, col)[0] == "FB":
-                    actions += [(row, col, "FC"), (row, col, "FE"), (row, col, "FD")]
+                    actions += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"]]
                 elif self.state.board.get_piece(row, col)[0] == "FE":
-                    actions += [(row, col, "FC"), (row, col, "FB"), (row, col, "FD")]
+                    actions += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"]]
                 elif self.state.board.get_piece(row, col)[0] == "FD":
-                    actions += [(row, col, "FC"), (row, col, "FB"), (row, col, "FE")]
+                    actions += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"]]
                 elif self.state.board.get_piece(row, col)[0] == "BC":
-                    actions += [(row, col, "BB"), (row, col, "BE"), (row, col, "BD")]
+                    actions += [[row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
                 elif self.state.board.get_piece(row, col)[0] == "BB":
-                    actions += [(row, col, "BC"), (row, col, "BE"), (row, col, "BD")]
+                    actions += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"]]
                 elif self.state.board.get_piece(row, col)[0] == "BE":
-                    actions += [(row, col, "BC"), (row, col, "BB"), (row, col, "BD")]
+                    actions += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"]]
                 elif self.state.board.get_piece(row, col)[0] == "BD":
-                    actions += [(row, col, "BC"), (row, col, "BB"), (row, col, "BE")]
+                    actions += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"]]
                 elif self.state.board.get_piece(row, col)[0] == "VC":
-                    actions += [(row, col, "VB"), (row, col, "VE"), (row, col, "VD")]
+                    actions += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
                 elif self.state.board.get_piece(row, col)[0] == "VB":
-                    actions += [(row, col, "VC"), (row, col, "VE"), (row, col, "VD")]
+                    actions += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"]]
                 elif self.state.board.get_piece(row, col)[0] == "VE":
-                    actions += [(row, col, "VC"), (row, col, "VB"), (row, col, "VD")]
+                    actions += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"]]
                 elif self.state.board.get_piece(row, col)[0] == "VD":
-                    actions += [(row, col, "VC"), (row, col, "VB"), (row, col, "VE")]
+                    actions += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"]]
                 elif self.state.board.get_piece(row, col)[0] == "LH":
-                    actions += [(row, col, "LV")]
+                    actions += [[row, col, "LV"]]
                 elif self.state.board.get_piece(row, col)[0] == "LV":
-                    actions += [(row, col, "LH")]
-        #print(actions)
+                    actions += [[row, col, "LH"]]
         return actions
         
     def result(self, state: PipeManiaState, action):
@@ -306,6 +304,8 @@ class PipeMania(Problem):
                 obj = self.state.board.get_value(row,col)
                 obj_left, obj_right = self.state.board.adjacent_horizontal_values(row, col)
                 obj_up, obj_down = self.state.board.adjacent_vertical_values(row, col)
+
+                print(obj)
 
                 if obj == "FC":
                     if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
@@ -363,7 +363,7 @@ class PipeMania(Problem):
                         (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "VB":
-                    
+
                     if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
                         (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
                         (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
@@ -405,11 +405,10 @@ class PipeMania(Problem):
 if __name__ == "__main__":
 
     board = Board.parse_instance()
-    board.print()
-
+    
     problem = PipeMania(board)
     
-    goal = depth_first_tree_search(problem) #????
+    goal = depth_first_tree_search(problem)
 
     goal.state.board.print()
 
