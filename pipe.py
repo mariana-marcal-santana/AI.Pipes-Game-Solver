@@ -38,33 +38,40 @@ class Board:
         return Board(np.copy(self.board), self.n_rows, self.n_cols)
     
     """ Representação interna de uma grelha de PipeMania. """
+
+    def get_piece(self, row: int, col: int):
+        """ Devolve a peça presente na posição (row, col) da grelha. """
+        return self.board[row][col]
+    
+    def get_value(self, row: int, col: int):
+        """ Devolve o valor presente na posição (row, col) da grelha. """
+        return self.get_piece(row, col)[0]
+
     def adjacent_vertical_values(self, row: int, col: int):
-        """ Devolve os valores imediatamente acima e abaixo,
-        respectivamente. """
-        if row == 0:
-            return (None, self.board[row + 1][col][0])
-        elif row == len(self.board) - 1:
-            return (self.board[row - 1][col][0], None)
-        else:
-            return (self.board[row - 1][col][0], self.board[row + 1][col][0])
+        """Returns the values immediately above and below the given position."""
+        above = self.get_value(row - 1, col) if row > 0 else None
+        below = self.get_value(row + 1, col) if row < len(self.board) - 1 else None
+        return (above, below)
         
     def adjacent_horizontal_values(self, row: int, col: int):
         """ Devolve os valores imediatamente à esquerda e à direita,
         respectivamente. """
-        if col == 0:
-            return (None, self.board[row][col + 1][0])
-        elif col == len(self.board[0]) - 1:
-            return (self.board[row][col - 1][0], None)
-        else:
-            return (self.board[row][col - 1][0], self.board[row][col + 1][0])
+        up = self.get_value(row, col - 1) if col > 0 else None
+        down = self.get_value(row, col + 1) if col < len(self.board[0]) - 1 else None
+        return (up, down)
         
-    def get_value(self, row: int, col: int):
-        """ Devolve o valor presente na posição (row, col) da grelha. """
-        return self.board[row][col][0]
+    def adjacent_vertical_pieces(self, row: int, col: int):
+        """Returns the pieces immediately above and below the given position."""
+        above = self.get_piece(row - 1, col) if row > 0 else None
+        below = self.get_piece(row + 1, col) if row < len(self.board) - 1 else None
+        return (above, below)
     
-    def get_piece(self, row: int, col: int):
-        """ Devolve a peça presente na posição (row, col) da grelha. """
-        return self.board[row][col]
+    def adjacent_horizontal_pieces(self, row: int, col: int):
+        """ Devolve as peças imediatamente à esquerda e à direita,
+        respectivamente. """
+        left = self.get_piece(row, col - 1) if col > 0 else None
+        right = self.get_piece(row, col + 1) if col < len(self.board[0]) - 1 else None
+        return (left, right) 
     
     def print_test(self):
         """ Imprime a grelha de PipeMania. """
@@ -230,8 +237,7 @@ class Board:
         board_instance = Board(board, len(board), len(board[0]))
 
         board_instance.run_deductions()
-        board_instance.print_test()
-
+        #board_instance.print_test()
         return board_instance
 
 class PipeMania(Problem):
@@ -240,6 +246,10 @@ class PipeMania(Problem):
         self.state = PipeManiaState(board)
         super().__init__(self.state)
 
+    def get_filtered_actions(state, row, col):
+        # TODO
+        return []
+
     def actions(self, state: PipeManiaState):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
@@ -247,9 +257,16 @@ class PipeMania(Problem):
         
         for row in range(self.state.board.n_rows):
             for col in range(self.state.board.n_cols):
+
+                obj = state.board.get_piece(row,col)
+                obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
+                obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
                 
                 if state.board.get_piece(row, col)[1] == '0':
                     continue
+                #elif obj_left[1] == '0' or obj_right[1] == '0' or obj_up[1] == '0' or obj_down[1] == '0':
+                    #actions += PipeMania.get_filtered_actions(state, row, col)
+                # TODO
                 elif state.board.get_piece(row, col)[0] == "FC":
                     actions += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
                 elif state.board.get_piece(row, col)[0] == "FB":
@@ -290,7 +307,7 @@ class PipeMania(Problem):
         new_board : Board = state.board.copy_board()
         
         new_board.board[row][col][0] = piece
-        new_board.print_test()
+        #new_board.print_test()
         return PipeManiaState(new_board)
 
     def goal_test(self, state: PipeManiaState):
@@ -304,9 +321,6 @@ class PipeMania(Problem):
                 obj = state.board.get_value(row,col)
                 obj_left, obj_right = state.board.adjacent_horizontal_values(row, col)
                 obj_up, obj_down = state.board.adjacent_vertical_values(row, col)
-
-                print(obj)
-                print(obj_down)
 
                 if obj == "FC":
                     if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
@@ -345,7 +359,6 @@ class PipeMania(Problem):
                         (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
                         return False
                 elif obj == "BE":
-                    print("BE")
                     if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
                         (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
                         (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
@@ -364,16 +377,10 @@ class PipeMania(Problem):
                         (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
                         return False
                 elif obj == "VB":
-                    #print("VB")
                     if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
                         (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
                         (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
                         (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        
-                        print(obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"])
-                        print(obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"])
-                        print(obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"])
-                        print(obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])
                         return False
                 elif obj == "VE":
                     if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
@@ -416,4 +423,3 @@ if __name__ == "__main__":
     goal = depth_first_tree_search(problem)
 
     goal.state.board.print()
-
