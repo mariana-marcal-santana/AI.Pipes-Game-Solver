@@ -300,8 +300,6 @@ class PipeMania(Problem):
         obj = state.board.get_piece(row,col)
         actions_left, actions_rigth, actions_up, actions_down = [], [], [], []
 
-        #print(obj_left, obj_right, obj_up, obj_down)
-
         # actions left
         if obj_left[1] == None:
             actions_left += self.action_list(state, row, col, obj[0][0], '0', 0)
@@ -346,13 +344,6 @@ class PipeMania(Problem):
             actions_down += self.action_list(state, row, col, obj[0][0], '0', 3)
             actions_down += self.action_list(state, row, col, obj[0][0], '1', 3)
 
-        #acts = [el for el in actions_left if el in actions_rigth and el in actions_up and el in actions_down]
-        # print(actions_left)
-        # print(actions_rigth)
-        # print(actions_up)
-        # print(actions_down)
-        # print(acts)
-        
         return [el for el in actions_left if el in actions_rigth and el in actions_up and el in actions_down]
 
     def actions(self, state: PipeManiaState):
@@ -361,7 +352,7 @@ class PipeMania(Problem):
 
         row = state.depth // state.board.n_rows
         col = state.depth % state.board.n_cols
-        # print(row, col)
+        #print(row, col)
         # too much depth for the board
         if state.board.n_rows <= row or state.board.n_cols <= col:
             return []
@@ -380,7 +371,6 @@ class PipeMania(Problem):
 
         return PipeMania.get_filtered_actions(self, state, row, col, obj_left, obj_right, obj_up, obj_down)
 
-        
     def result(self, state: PipeManiaState, action):
         """Retorna o estado resultante de executar a 'action' sobre
         'state' passado como argumento. A ação a executar deve ser uma
@@ -418,7 +408,7 @@ class PipeMania(Problem):
                     if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
                         (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
                         (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LH"])):
+                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
                         return False
                 elif obj == "FE":
                     if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
