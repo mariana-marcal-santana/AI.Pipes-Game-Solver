@@ -20,7 +20,7 @@ from search import (
 pieces_specs = {"FC": "0010", "FB": "0001", "FE": "1000", "FD": "0100",
                 "BC": "1110", "BB": "1101", "BE": "1011", "BD": "0111",
                 "VC": "1010", "VB": "0101", "VE": "1001", "VD": "0110",
-                "LH": "1100", "LV": "0011"}
+                "LH": "1100", "LV": "0011", None: "0000"}
 
 class PipeManiaState:
     state_id = 0
@@ -291,7 +291,7 @@ class PipeMania(Problem):
     def action_list(self, state, row, col, pipe, value, index):
         actions = []
         for key, val in pieces_specs.items():
-            if val[index] == value and key[0] == pipe:
+            if val[index] == value and key != None and key[0] == pipe:
                 actions.append([row, col, key])
         return actions
 
@@ -398,91 +398,11 @@ class PipeMania(Problem):
                 obj_left, obj_right = state.board.adjacent_horizontal_values(row, col)
                 obj_up, obj_down = state.board.adjacent_vertical_values(row, col)
 
-                if obj == "FC":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "FB":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "FE":
-                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in [None, "FE", "FC", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "FD":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in [None, "FE", "FB", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "BC":
-                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "BB":
-                    if ((obj_left not in ["FD", "BC", "BB", "BD", "VB", "VD", "LH"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "BE":
-                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "BD":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "VC":
-                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "VB":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "VE":
-                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False
-                elif obj == "VD":
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "LH":
-                    if ((obj_left not in ["FD", "BC", "BD", "BB", "VB", "VD", "LH"]) or \
-                        (obj_right not in ["FE", "BC", "BB", "BE", "VC", "VE", "LH"]) or \
-                        (obj_up not in [None, "FC", "FE", "FD", "BC", "VC", "VD", "LH"]) or \
-                        (obj_down not in [None, "FB", "FE", "FD", "BB", "VB", "VE", "LH"])):
-                        return False
-                elif obj == "LV": 
-                    if ((obj_left not in [None, "FC", "FB", "FE", "BE", "VC", "VE", "LV"]) or \
-                        (obj_right not in [None, "FC", "FB", "FD", "BD", "VB", "VD", "LV"]) or \
-                        (obj_up not in ["FB", "BB", "BE", "BD", "VB", "VE", "LV"]) or \
-                        (obj_down not in ["FC", "BC", "BE", "BD", "VC", "VD", "LV"])):
-                        return False          
-
+                if not (pieces_specs[obj][0] == pieces_specs[obj_left][1] and \
+                    pieces_specs[obj][1] == pieces_specs[obj_right][0] and \
+                    pieces_specs[obj][2] == pieces_specs[obj_up][3] and \
+                    pieces_specs[obj][3] == pieces_specs[obj_down][2]):
+                    return False
         return True
 
     def h(self, node: Node):
