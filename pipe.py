@@ -3,7 +3,7 @@
 # 106221 João Rodrigues
 
 from sys import stdin
-
+import time
 
 import numpy as np
 from search import (
@@ -98,18 +98,21 @@ class Board:
     def get_deductions(self, row: int, col: int):
 
         obj = self.board[row][col]
-        obj_left, obj_right = self.adjacent_horizontal_values(row, col)
-        obj_up, obj_down = self.adjacent_vertical_values(row, col)
+        obj_left, obj_right = self.adjacent_horizontal_pieces(row, col)
+        obj_up, obj_down = self.adjacent_vertical_pieces(row, col)
+        print(obj)
+        print(obj_left, obj_right, obj_up, obj_down)
+        print("\n")
         
-        if obj_left == None:
-            obj_left = " "
-        if obj_right == None:
-            obj_right = " "
-        if obj_up == None:
-            obj_up = " "
-        if obj_down == None:
-            obj_down = " "
-            
+        if obj_left is None or obj_left[0] is None:
+            obj_left = [" ", None]
+        if obj_right is None or obj_right[0] is None:    
+            obj_right = [" ", None]
+        if obj_up is None or obj_up[0] is None:
+            obj_up = [" ", None]
+        if obj_down is None or obj_down[0] is None:
+            obj_down = [" ", None]
+        
         # check objs on corners and turn pipes and make deductions
         if obj[0][0] == "V" :
             if row == 0 and col == 0 :
@@ -125,28 +128,28 @@ class Board:
                 self.board[row][col][0] = "VC"
                 self.board[row][col][1] = 0
 
-            elif row == 0 and col == 1 and obj_left[0] == "V":
+            elif row == 0 and col == 1 and obj_left[0][0] == "V":
                 self.board[row][col][0] = "VE"
                 self.board[row][col][1] = 0
-            elif row == 0 and col == self.n_cols - 2 and obj_right[0] == "V":
+            elif row == 0 and col == self.n_cols - 2 and obj_right[0][0] == "V":
                 self.board[row][col][0] = "VB"
                 self.board[row][col][1] = 0
-            elif row == self.n_rows - 1 and col == 1 and obj_left[0] == "V":
+            elif row == self.n_rows - 1 and col == 1 and obj_left[0][0] == "V":
                 self.board[row][col][0] = "VC"
                 self.board[row][col][1] = 0
-            elif row == self.n_rows - 1 and col == self.n_cols - 2 and obj_right[0] == "V":
+            elif row == self.n_rows - 1 and col == self.n_cols - 2 and obj_right[0][0] == "V":
                 self.board[row][col][0] = "VD"
                 self.board[row][col][1] = 0
-            elif row == 1 and col == 0 and obj_up[0] == "V":
+            elif row == 1 and col == 0 and obj_up[0][0] == "V":
                 self.board[row][col][0] = "VD"
                 self.board[row][col][1] = 0
-            elif row == self.n_rows - 2 and col == 0 and obj_down[0] == "V":
+            elif row == self.n_rows - 2 and col == 0 and obj_down[0][0] == "V":
                 self.board[row][col][0] = "VB"
                 self.board[row][col][1] = 0
-            elif row == 1 and col == self.n_cols - 1 and obj_up[0] == "V":
+            elif row == 1 and col == self.n_cols - 1 and obj_up[0][0] == "V":
                 self.board[row][col][0] = "VC"
                 self.board[row][col][1] = 0
-            elif row == self.n_rows - 2 and col == self.n_cols - 1 and obj_down[0] == "V":
+            elif row == self.n_rows - 2 and col == self.n_cols - 1 and obj_down[0][0] == "V":
                 self.board[row][col][0] = "VE"
                 self.board[row][col][1] = 0
             
@@ -159,8 +162,9 @@ class Board:
             elif (col == 0 or col == self.n_cols - 1):
                 self.board[row][col][0] = "LV"
                 self.board[row][col][1] = 0
+        
         # if obj is a bifurcation pipe
-
+        
         elif obj[0][0] == "B":
             if row == 0:
                 self.board[row][col][0] = "BB"
@@ -174,63 +178,95 @@ class Board:
             elif col == self.n_cols - 1:
                 self.board[row][col][0] = "BE"
                 self.board[row][col][1] = 0
-        
+
+            elif (obj_left[1] == 0) and (obj_left[0] in ["FC","FB","FD","BD","VB","VD","LV"]):
+                print("entrou")
+                self.board[row][col][0] = "BE"
+                self.board[row][col][1] = 0
+            elif (obj_right[1] == 0) and (obj_right[0] in ["FC","FB","FE","BE","VC","VE","LV"]):
+                print("entrou")
+                self.board[row][col][0] = "BD"
+                self.board[row][col][1] = 0
+            elif (obj_up[1] == 0) and (obj_up[0] in ["FC","FE","FD","BC","VC","VD","LH"]):
+                print("entrou")
+                self.board[row][col][0] = "BB"
+                self.board[row][col][1] = 0
+            elif (obj_down[1] == 0) and (obj_down[0] in ["FB","BE","BD","VB","VE","LH"]):
+                print("entrou")
+                self.board[row][col][0] = "BC"
+                self.board[row][col][1] = 0
+            
+            
         # if obj is a close pipe
         elif obj[0][0] == "F":
+        
             if (row == 0 or row == self.n_rows - 1) \
-                and (obj_left[0] == "L" or obj_left[0] =="B"):
+                and (obj_left[0][0] == "L" or obj_left[0][0] =="B"):
+            
                 self.board[row][col][0] = "FE"
                 self.board[row][col][1] = 0
             elif (row == 0 or row == self.n_cols - 1) \
-                and (obj_right[0] == "L" or obj_right[0] =="B"):
+                and (obj_right[0][0] == "L" or obj_right[0][0] =="B"):
                 self.board[row][col][0] = "FD"
                 self.board[row][col][1] = 0
             elif (col == 0 or col == self.n_cols - 1) \
-                and (obj_up[0] == "L" or obj_up[0] =="B"):
+                and (obj_up[0][0] == "L" or obj_up[0][0] =="B"):
                 self.board[row][col][0] = "FC"
                 self.board[row][col][1] = 0
             elif (col == 0 or col == self.n_cols - 1) \
-                and (obj_down[0] == "L" or obj_down[0] =="B"):
+                and (obj_down[0][0] == "L" or obj_down[0][0] =="B"):
                 self.board[row][col][0] = "FB"
                 self.board[row][col][1] = 0
         
             elif ((row == 0 and col == 1) or (row == self.n_rows - 1 and col == 1)) \
-                and (obj_left[0] == "L" ):
+                and (obj_left[0][0] == "L" ):
                 self.board[row][col][0] = "FE"
                 self.board[row][col][1] = 0
             elif ((row == 0 and col == self.n_cols - 2) or (row == self.n_rows - 1 and col == self.n_cols - 2)) \
-                and (obj_right[0] == "L"):
+                and (obj_right[0][0] == "L"):
                 self.board[row][col][0] = "FD"
                 self.board[row][col][1] = 0
             elif ((col == 0 and row == 1) or (col == self.n_cols - 1 and row == 1)) \
-                and (obj_up[0] == "L"):
+                and (obj_up[0][0] == "L"):
                 self.board[row][col][0] = "FC"
                 self.board[row][col][1] = 0
             elif ((col == 0 and row == self.n_rows - 2) or (col == self.n_cols - 1 and row == self.n_rows - 2)) \
-                and (obj_down[0] == "L"):
+                and (obj_down[0][0] == "L"):
                 self.board[row][col][0] = "FB"
                 self.board[row][col][1] = 0
 
-            elif (obj_left[0] == "F" and obj_right[0] == "F"):
+            elif (obj_left[0][0] == "F" and obj_right[0][0] == "F"):
                 if (row == 0):
                     self.board[row][col][0] = "FB"
                     self.board[row][col][1] = 0
                 elif (row == self.n_rows - 1):
                     self.board[row][col][0] = "FC"
                     self.board[row][col][1] = 0
-            elif (obj_up[0] == "F" and obj_down[0] == "F"):
+            elif (obj_up[0][0] == "F" and obj_down[0][0] == "F"):
                 if (col == 0):
                     self.board[row][col][0] = "FE"
                     self.board[row][col][1] = 0
                 elif (col == self.n_cols - 1):
                     self.board[row][col][0] = "FD"
                     self.board[row][col][1] = 0
-    
+            
+            elif (obj_up[1] == 0 and obj_up[0] in ["BB","BE","BD","VB","VE","LV"]):
+                self.board[row][col][0] = "FC"
+                self.board[row][col][1] = 0
+            elif (obj_down[1] == 0 and obj_down[0] in ["BC","BE","BD","VC","VD","LV"]):
+                self.board[row][col][0] = "FB"
+                self.board[row][col][1] = 0
+            elif (obj_left[1] == 0 and obj_left[0] in ["BC","BB","BD","VB","VD","LH"]):
+                self.board[row][col][0] = "FE"
+                self.board[row][col][1] = 0
+            elif (obj_right[1] == 0 and obj_right[0] in ["BC","BB","BD","VC","VE","LH"]):
+                self.board[row][col][0] = "FD"
+                self.board[row][col][1] = 0
+          
     def run_deductions(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
-                if (i == 0 or i == self.n_rows - 1) or (j == 0 or j == self.n_cols - 1):
-                    self.get_deductions(i, j)
+                self.get_deductions(i, j)
             
     @staticmethod
     def parse_instance():
@@ -243,7 +279,7 @@ class Board:
         board_instance = Board(board, len(board), len(board[0]))
 
         board_instance.run_deductions()
-        #board_instance.print_test()
+        board_instance.print_test()
         return board_instance
 
 class PipeMania(Problem):
