@@ -89,10 +89,11 @@ class Board:
             
     def print(self):
         """ Imprime a grelha de PipeMania. """
-        for row in self.board:
-            for column in row:
-                print(column[0], end = "")
-                print('\t', end = "") 
+        for row in range(self.n_rows):
+            for col in range(self.n_cols):
+                print(self.get_value(row, col), end = "")
+                if col < self.n_cols - 1:
+                    print('\t', end = "") 
             print("\n",end = "")
         
     def get_deductions(self, row: int, col: int):
@@ -100,9 +101,9 @@ class Board:
         obj = self.board[row][col]
         obj_left, obj_right = self.adjacent_horizontal_pieces(row, col)
         obj_up, obj_down = self.adjacent_vertical_pieces(row, col)
-        print(obj)
-        print(obj_left, obj_right, obj_up, obj_down)
-        print("\n")
+        # print(obj)
+        # print(obj_left, obj_right, obj_up, obj_down)
+        # print("\n")
         
         if obj_left is None or obj_left[0] is None:
             obj_left = [" ", None]
@@ -279,7 +280,7 @@ class Board:
         board_instance = Board(board, len(board), len(board[0]))
 
         board_instance.run_deductions()
-        board_instance.print_test()
+        
         return board_instance
 
 class PipeMania(Problem):
@@ -303,13 +304,13 @@ class PipeMania(Problem):
         row = state.depth // 2
         col = state.depth % 2
 
-        #print(row, col)
+        print(row, col)
         # too much depth for the board
         if state.board.n_rows <= row or state.board.n_cols <= col:
             return []
 
         if state.board.get_piece(row, col)[1] == '0':
-            #print("entrou")
+            print("entrou")
             state.depth += 1
             return PipeMania.actions(self, state)
         
@@ -350,8 +351,8 @@ class PipeMania(Problem):
             actions_ += [[row, col, "LV"]]
         elif state.board.get_piece(row, col)[0] == "LV":
             actions_ += [[row, col, "LH"]]
-        #print("actions_", state.depth)
-        #print(actions_)
+        print("actions_", state.depth)
+        print(actions_)
         return actions_
 
         
@@ -367,8 +368,8 @@ class PipeMania(Problem):
         new_board.board[row][col][0] = piece
         new_board.board[row][col][1] = 0
 
-        #new_board.print_test()
-        #print(state.depth + 1)
+        new_board.print_test()
+        print(state.depth + 1)
         return PipeManiaState(new_board, state.depth + 1)
 
     def goal_test(self, state: PipeManiaState):
@@ -478,9 +479,12 @@ class PipeMania(Problem):
 if __name__ == "__main__":
 
     board = Board.parse_instance()
-    board.print()
+    board.print_test()
     problem = PipeMania(board, 0)
     
     goal = depth_first_tree_search(problem)
 
-    goal.state.board.print()
+    if goal is not None:
+        goal.state.board.print()
+    else:
+        print("Goal None")
