@@ -43,8 +43,6 @@ class Board:
     def copy_board(self):
         return Board(np.copy(self.board), self.n_rows, self.n_cols)
     
-    """ Representação interna de uma grelha de PipeMania. """
-
     def get_piece(self, row: int, col: int):
         """ Devolve a peça presente na posição (row, col) da grelha. """
         return self.board[row][col]
@@ -289,13 +287,72 @@ class PipeMania(Problem):
         self.state = PipeManiaState(board, depth)
         super().__init__(self.state)
 
-    def get_filtered_actions(state, row, col):
-        obj = state.board.get_piece(row,col)
-        obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
-        obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
+    def action_list(self, state, row, col, pipe, value, index):
+        actions = []
+        for key, val in pieces_specs.items():
+            if val[index] == value and key[0] == pipe:
+                actions.append([row, col, key])
+        return actions
 
-        #if obj_left[1] == '0':
-        return []
+    def get_filtered_actions(self, state, row, col, obj_left, obj_right, obj_up, obj_down):
+        
+        obj = state.board.get_piece(row,col)
+        actions_left, actions_rigth, actions_up, actions_down = [], [], [], []
+
+        #print(obj_left, obj_right, obj_up, obj_down)
+
+        # actions left
+        if obj_left[1] == None:
+            actions_left += self.action_list(state, row, col, obj[0][0], '0', 0)
+        elif obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '0':
+            actions_left += self.action_list(state, row, col, obj[0][0], '0', 0)
+        elif obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1':
+            actions_left += self.action_list(state, row, col, obj[0][0], '1', 0)
+        else:
+            actions_left += self.action_list(state, row, col, obj[0][0], '0', 0)
+            actions_left += self.action_list(state, row, col, obj[0][0], '1', 0)
+
+        # actions right
+        if obj_right[1] == None:
+            actions_rigth += self.action_list(state, row, col, obj[0][0], '0', 1)
+        elif obj_right[1] == '0' and pieces_specs[obj_right[0]][0] == '0':
+            actions_rigth += self.action_list(state, row, col, obj[0][0], '0', 1)
+        elif obj_right[1] == '0' and pieces_specs[obj_right[0]][0] == '1':
+            actions_rigth += self.action_list(state, row, col, obj[0][0], '1', 1)
+        else:
+            actions_rigth += self.action_list(state, row, col, obj[0][0], '0', 1)
+            actions_rigth += self.action_list(state, row, col, obj[0][0], '1', 1)
+
+        # actions up
+        if obj_up[1] == None:
+            actions_up += self.action_list(state, row, col, obj[0][0], '0', 2)
+        elif obj_up[1] == '0' and pieces_specs[obj_up[0]][3] == '0':
+            actions_up += self.action_list(state, row, col, obj[0][0], '0', 2)
+        elif obj_up[1] == '0' and pieces_specs[obj_up[0]][3] == '1':
+            actions_up += self.action_list(state, row, col, obj[0][0], '1', 2)
+        else:
+            actions_up += self.action_list(state, row, col, obj[0][0], '0', 2)
+            actions_up += self.action_list(state, row, col, obj[0][0], '1', 2)
+
+        # actions down
+        if obj_down[1] == None:
+            actions_down += self.action_list(state, row, col, obj[0][0], '0', 3)
+        elif obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '0':
+            actions_down += self.action_list(state, row, col, obj[0][0], '0', 3)
+        elif obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '1':
+            actions_down += self.action_list(state, row, col, obj[0][0], '1', 3)
+        else:
+            actions_down += self.action_list(state, row, col, obj[0][0], '0', 3)
+            actions_down += self.action_list(state, row, col, obj[0][0], '1', 3)
+
+        #acts = [el for el in actions_left if el in actions_rigth and el in actions_up and el in actions_down]
+        # print(actions_left)
+        # print(actions_rigth)
+        # print(actions_up)
+        # print(actions_down)
+        # print(acts)
+        
+        return [el for el in actions_left if el in actions_rigth and el in actions_up and el in actions_down]
 
     def actions(self, state: PipeManiaState):
         """Retorna uma lista de ações que podem ser executadas a
@@ -303,57 +360,24 @@ class PipeMania(Problem):
 
         row = state.depth // state.board.n_rows
         col = state.depth % state.board.n_cols
-
-        #print(row, col)
+        # print(row, col)
         # too much depth for the board
         if state.board.n_rows <= row or state.board.n_cols <= col:
             return []
 
         if state.board.get_piece(row, col)[1] == '0':
-            #print("entrou")
             state.depth += 1
             return PipeMania.actions(self, state)
-        
-        actions_ = []
-        obj = state.board.get_piece(row, col)
+
         obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
         obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
 
-        """if obj_left[1] == '0' or obj_right[1] == '0' or obj_up[1] == '0' or obj_down[1] == '0' \
-            or obj_left[0] == None or obj_right[0] == None or obj_up[0] == None or obj_down[0] == None:
-            actions += PipeMania.get_filtered_actions(state, row, col)"""
+        if obj_left is None: obj_left = [" ", None]
+        if obj_right is None: obj_right = [" ", None]
+        if obj_up is None: obj_up = [" ", None]
+        if obj_down is None: obj_down = [" ", None]
 
-        if state.board.get_piece(row, col)[0] == "FC":
-            actions_ += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"], [row, col, "FC"]]
-        elif state.board.get_piece(row, col)[0] == "FB":
-            actions_ += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"], [row, col, "FB"]]
-        elif state.board.get_piece(row, col)[0] == "FE":
-            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"], [row, col, "FE"]]
-        elif state.board.get_piece(row, col)[0] == "FD":
-            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
-        elif state.board.get_piece(row, col)[0] == "BC":
-            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
-        elif state.board.get_piece(row, col)[0] == "BB":
-            actions_ += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"], [row, col, "BB"]]
-        elif state.board.get_piece(row, col)[0] == "BE":
-            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"], [row, col, "BE"]]
-        elif state.board.get_piece(row, col)[0] == "BD":
-            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
-        elif state.board.get_piece(row, col)[0] == "VC":
-            actions_ += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"], [row, col, "VC"]]
-        elif state.board.get_piece(row, col)[0] == "VB":
-            actions_ += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"], [row, col, "VB"]]
-        elif state.board.get_piece(row, col)[0] == "VE":
-            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"], [row, col, "VE"]]
-        elif state.board.get_piece(row, col)[0] == "VD":
-            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
-        elif state.board.get_piece(row, col)[0] == "LH":
-            actions_ += [[row, col, "LV"], [row, col, "LH"]]
-        elif state.board.get_piece(row, col)[0] == "LV":
-            actions_ += [[row, col, "LH"], [row, col, "LV"]]
-        #print("actions_", state.depth)
-        #print(actions_)
-        return actions_
+        return PipeMania.get_filtered_actions(self, state, row, col, obj_left, obj_right, obj_up, obj_down)
 
         
     def result(self, state: PipeManiaState, action):
@@ -366,8 +390,6 @@ class PipeMania(Problem):
         new_board : Board = state.board.copy_board()
         
         new_board.board[row][col][0] = piece
-        
-
         #new_board.print_test()
         #print(state.depth + 1)
         return PipeManiaState(new_board, state.depth + 1)
@@ -484,7 +506,4 @@ if __name__ == "__main__":
     
     goal = depth_first_tree_search(problem)
 
-    if goal is not None:
-        goal.state.board.print()
-    else:
-        print("Goal None")
+    goal.state.board.print()
