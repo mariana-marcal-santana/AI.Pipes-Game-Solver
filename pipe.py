@@ -15,7 +15,7 @@ from search import (
     greedy_search,
     recursive_best_first_search,
 )
-
+                        #LEFT RIGHT UP DOWN
 pieces_specs = {"FC": "0010", "FB": "0001", "FE": "1000", "FD": "0100",
                 "BC": "1110", "BB": "1101", "BE": "1011", "BD": "0111",
                 "VC": "1010", "VB": "0101", "VE": "1001", "VD": "0110",
@@ -178,20 +178,16 @@ class Board:
                 self.board[row][col][0] = "BE"
                 self.board[row][col][1] = 0
 
-            elif (obj_left[1] == 0) and (obj_left[0] in ["FC","FB","FD","BD","VB","VD","LV"]):
-                print("entrou")
+            elif (obj_left[1] == '0') and (obj_left[0] in ["FC","FB","FD","BD","VB","VD","LV"]):
                 self.board[row][col][0] = "BE"
                 self.board[row][col][1] = 0
-            elif (obj_right[1] == 0) and (obj_right[0] in ["FC","FB","FE","BE","VC","VE","LV"]):
-                print("entrou")
+            elif (obj_right[1] == '0') and (obj_right[0] in ["FC","FB","FE","BE","VC","VE","LV"]):
                 self.board[row][col][0] = "BD"
                 self.board[row][col][1] = 0
-            elif (obj_up[1] == 0) and (obj_up[0] in ["FC","FE","FD","BC","VC","VD","LH"]):
-                print("entrou")
+            elif (obj_up[1] == '0') and (obj_up[0] in ["FC","FE","FD","BC","VC","VD","LH"]):
                 self.board[row][col][0] = "BB"
                 self.board[row][col][1] = 0
-            elif (obj_down[1] == 0) and (obj_down[0] in ["FB","BE","BD","VB","VE","LH"]):
-                print("entrou")
+            elif (obj_down[1] == '0') and (obj_down[0] in ["FB","BE","BD","VB","VE","LH"]):
                 self.board[row][col][0] = "BC"
                 self.board[row][col][1] = 0
             
@@ -201,7 +197,6 @@ class Board:
         
             if (row == 0 or row == self.n_rows - 1) \
                 and (obj_left[0][0] == "L" or obj_left[0][0] =="B"):
-            
                 self.board[row][col][0] = "FE"
                 self.board[row][col][1] = 0
             elif (row == 0 or row == self.n_cols - 1) \
@@ -249,16 +244,16 @@ class Board:
                     self.board[row][col][0] = "FD"
                     self.board[row][col][1] = 0
             
-            elif (obj_up[1] == 0 and obj_up[0] in ["BB","BE","BD","VB","VE","LV"]):
+            elif (obj_up[1] == '0' and obj_up[0] in ["BB","BE","BD","VB","VE","LV"]):
                 self.board[row][col][0] = "FC"
                 self.board[row][col][1] = 0
-            elif (obj_down[1] == 0 and obj_down[0] in ["BC","BE","BD","VC","VD","LV"]):
+            elif (obj_down[1] == '0' and obj_down[0] in ["BC","BE","BD","VC","VD","LV"]):
                 self.board[row][col][0] = "FB"
                 self.board[row][col][1] = 0
-            elif (obj_left[1] == 0 and obj_left[0] in ["BC","BB","BD","VB","VD","LH"]):
+            elif (obj_left[1] == '0' and obj_left[0] in ["BC","BB","BD","VB","VD","LH"]):
                 self.board[row][col][0] = "FE"
                 self.board[row][col][1] = 0
-            elif (obj_right[1] == 0 and obj_right[0] in ["BC","BB","BD","VC","VE","LH"]):
+            elif (obj_right[1] == '0' and obj_right[0] in ["BC","BB","BD","VC","VE","LH"]):
                 self.board[row][col][0] = "FD"
                 self.board[row][col][1] = 0
           
@@ -390,6 +385,8 @@ class PipeMania(Problem):
         new_board : Board = state.board.copy_board()
         
         new_board.board[row][col][0] = piece
+        new_board.board[row][col][1] = 0
+
         #new_board.print_test()
         #print(state.depth + 1)
         return PipeManiaState(new_board, state.depth + 1)
