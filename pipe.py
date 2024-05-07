@@ -16,12 +16,18 @@ from search import (
     recursive_best_first_search,
 )
 
+pieces_specs = {"FC": "0010", "FB": "0001", "FE": "1000", "FD": "0100",
+                "BC": "1110", "BB": "1101", "BE": "1011", "BD": "0111",
+                "VC": "1010", "VB": "0101", "VE": "1001", "VD": "0110",
+                "LH": "1100", "LV": "0011"}
+
 class PipeManiaState:
     state_id = 0
-    def __init__(self, board):
+    def __init__(self, board, depth):
         self.board = board
         self.id = PipeManiaState.state_id
         PipeManiaState.state_id += 1
+        self.depth = depth
     def __lt__(self, other):
         """ Este método é utilizado em caso de empate na gestão da lista
         de abertos nas procuras informadas. """
@@ -241,61 +247,77 @@ class Board:
         return board_instance
 
 class PipeMania(Problem):
-    def __init__(self, board: Board):
+    def __init__(self, board: Board, depth: int):
         """O construtor especifica o estado inicial."""
-        self.state = PipeManiaState(board)
+        self.state = PipeManiaState(board, depth)
         super().__init__(self.state)
 
     def get_filtered_actions(state, row, col):
-        # TODO
+        obj = state.board.get_piece(row,col)
+        obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
+        obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
+
+        #if obj_left[1] == '0':
         return []
 
     def actions(self, state: PipeManiaState):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
-        actions = []
-        
-        for row in range(self.state.board.n_rows):
-            for col in range(self.state.board.n_cols):
 
-                obj = state.board.get_piece(row,col)
-                obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
-                obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
-                
-                if state.board.get_piece(row, col)[1] == '0':
-                    continue
-                #elif obj_left[1] == '0' or obj_right[1] == '0' or obj_up[1] == '0' or obj_down[1] == '0':
-                    #actions += PipeMania.get_filtered_actions(state, row, col)
-                # TODO
-                elif state.board.get_piece(row, col)[0] == "FC":
-                    actions += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
-                elif state.board.get_piece(row, col)[0] == "FB":
-                    actions += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"]]
-                elif state.board.get_piece(row, col)[0] == "FE":
-                    actions += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"]]
-                elif state.board.get_piece(row, col)[0] == "FD":
-                    actions += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"]]
-                elif state.board.get_piece(row, col)[0] == "BC":
-                    actions += [[row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
-                elif state.board.get_piece(row, col)[0] == "BB":
-                    actions += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"]]
-                elif state.board.get_piece(row, col)[0] == "BE":
-                    actions += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"]]
-                elif state.board.get_piece(row, col)[0] == "BD":
-                    actions += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"]]
-                elif state.board.get_piece(row, col)[0] == "VC":
-                    actions += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
-                elif state.board.get_piece(row, col)[0] == "VB":
-                    actions += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"]]
-                elif state.board.get_piece(row, col)[0] == "VE":
-                    actions += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"]]
-                elif state.board.get_piece(row, col)[0] == "VD":
-                    actions += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"]]
-                elif state.board.get_piece(row, col)[0] == "LH":
-                    actions += [[row, col, "LV"]]
-                elif state.board.get_piece(row, col)[0] == "LV":
-                    actions += [[row, col, "LH"]]
-        return actions
+        row = state.depth // 2
+        col = state.depth % 2
+
+        #print(row, col)
+        # too much depth for the board
+        if state.board.n_rows <= row or state.board.n_cols <= col:
+            return []
+
+        if state.board.get_piece(row, col)[1] == '0':
+            #print("entrou")
+            state.depth += 1
+            return PipeMania.actions(self, state)
+        
+        actions_ = []
+        obj = state.board.get_piece(row, col)
+        obj_left, obj_right = state.board.adjacent_horizontal_pieces(row, col)
+        obj_up, obj_down = state.board.adjacent_vertical_pieces(row, col)
+
+        """if obj_left[1] == '0' or obj_right[1] == '0' or obj_up[1] == '0' or obj_down[1] == '0' \
+            or obj_left[0] == None or obj_right[0] == None or obj_up[0] == None or obj_down[0] == None:
+            actions += PipeMania.get_filtered_actions(state, row, col)"""
+
+        if state.board.get_piece(row, col)[0] == "FC":
+            actions_ += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
+        elif state.board.get_piece(row, col)[0] == "FB":
+            actions_ += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"]]
+        elif state.board.get_piece(row, col)[0] == "FE":
+            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"]]
+        elif state.board.get_piece(row, col)[0] == "FD":
+            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"]]
+        elif state.board.get_piece(row, col)[0] == "BC":
+            actions_ += [[row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
+        elif state.board.get_piece(row, col)[0] == "BB":
+            actions_ += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"]]
+        elif state.board.get_piece(row, col)[0] == "BE":
+            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"]]
+        elif state.board.get_piece(row, col)[0] == "BD":
+            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"]]
+        elif state.board.get_piece(row, col)[0] == "VC":
+            actions_ += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
+        elif state.board.get_piece(row, col)[0] == "VB":
+            actions_ += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"]]
+        elif state.board.get_piece(row, col)[0] == "VE":
+            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"]]
+        elif state.board.get_piece(row, col)[0] == "VD":
+            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"]]
+        elif state.board.get_piece(row, col)[0] == "LH":
+            actions_ += [[row, col, "LV"]]
+        elif state.board.get_piece(row, col)[0] == "LV":
+            actions_ += [[row, col, "LH"]]
+        #print("actions_", state.depth)
+        #print(actions_)
+        return actions_
+
         
     def result(self, state: PipeManiaState, action):
         """Retorna o estado resultante de executar a 'action' sobre
@@ -307,8 +329,11 @@ class PipeMania(Problem):
         new_board : Board = state.board.copy_board()
         
         new_board.board[row][col][0] = piece
+        new_board.board[row][col][1] = 0
+
         #new_board.print_test()
-        return PipeManiaState(new_board)
+        #print(state.depth + 1)
+        return PipeManiaState(new_board, state.depth + 1)
 
     def goal_test(self, state: PipeManiaState):
         """Retorna True se e só se o estado passado como argumento é
@@ -417,8 +442,8 @@ class PipeMania(Problem):
 if __name__ == "__main__":
 
     board = Board.parse_instance()
-    
-    problem = PipeMania(board)
+    board.print()
+    problem = PipeMania(board, 0)
     
     goal = depth_first_tree_search(problem)
 
