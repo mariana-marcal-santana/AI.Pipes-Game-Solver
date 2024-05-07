@@ -301,16 +301,16 @@ class PipeMania(Problem):
         """Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento."""
 
-        row = state.depth // 2
-        col = state.depth % 2
+        row = state.depth // state.board.n_rows
+        col = state.depth % state.board.n_cols
 
-        print(row, col)
+        #print(row, col)
         # too much depth for the board
         if state.board.n_rows <= row or state.board.n_cols <= col:
             return []
 
         if state.board.get_piece(row, col)[1] == '0':
-            print("entrou")
+            #print("entrou")
             state.depth += 1
             return PipeMania.actions(self, state)
         
@@ -324,35 +324,35 @@ class PipeMania(Problem):
             actions += PipeMania.get_filtered_actions(state, row, col)"""
 
         if state.board.get_piece(row, col)[0] == "FC":
-            actions_ += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
+            actions_ += [[row, col, "FB"], [row, col, "FE"], [row, col, "FD"], [row, col, "FC"]]
         elif state.board.get_piece(row, col)[0] == "FB":
-            actions_ += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"]]
+            actions_ += [[row, col, "FC"], [row, col, "FE"], [row, col, "FD"], [row, col, "FB"]]
         elif state.board.get_piece(row, col)[0] == "FE":
-            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"]]
+            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FD"], [row, col, "FE"]]
         elif state.board.get_piece(row, col)[0] == "FD":
-            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"]]
+            actions_ += [[row, col, "FC"], [row, col, "FB"], [row, col, "FE"], [row, col, "FD"]]
         elif state.board.get_piece(row, col)[0] == "BC":
-            actions_ += [[row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
+            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
         elif state.board.get_piece(row, col)[0] == "BB":
-            actions_ += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"]]
+            actions_ += [[row, col, "BC"], [row, col, "BE"], [row, col, "BD"], [row, col, "BB"]]
         elif state.board.get_piece(row, col)[0] == "BE":
-            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"]]
+            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BD"], [row, col, "BE"]]
         elif state.board.get_piece(row, col)[0] == "BD":
-            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"]]
+            actions_ += [[row, col, "BC"], [row, col, "BB"], [row, col, "BE"], [row, col, "BD"]]
         elif state.board.get_piece(row, col)[0] == "VC":
-            actions_ += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
+            actions_ += [[row, col, "VB"], [row, col, "VE"], [row, col, "VD"], [row, col, "VC"]]
         elif state.board.get_piece(row, col)[0] == "VB":
-            actions_ += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"]]
+            actions_ += [[row, col, "VC"], [row, col, "VE"], [row, col, "VD"], [row, col, "VB"]]
         elif state.board.get_piece(row, col)[0] == "VE":
-            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"]]
+            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VD"], [row, col, "VE"]]
         elif state.board.get_piece(row, col)[0] == "VD":
-            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"]]
+            actions_ += [[row, col, "VC"], [row, col, "VB"], [row, col, "VE"], [row, col, "VD"]]
         elif state.board.get_piece(row, col)[0] == "LH":
-            actions_ += [[row, col, "LV"]]
+            actions_ += [[row, col, "LV"], [row, col, "LH"]]
         elif state.board.get_piece(row, col)[0] == "LV":
-            actions_ += [[row, col, "LH"]]
-        print("actions_", state.depth)
-        print(actions_)
+            actions_ += [[row, col, "LH"], [row, col, "LV"]]
+        #print("actions_", state.depth)
+        #print(actions_)
         return actions_
 
         
@@ -366,10 +366,10 @@ class PipeMania(Problem):
         new_board : Board = state.board.copy_board()
         
         new_board.board[row][col][0] = piece
-        new_board.board[row][col][1] = 0
+        
 
-        new_board.print_test()
-        print(state.depth + 1)
+        #new_board.print_test()
+        #print(state.depth + 1)
         return PipeManiaState(new_board, state.depth + 1)
 
     def goal_test(self, state: PipeManiaState):
@@ -479,7 +479,7 @@ class PipeMania(Problem):
 if __name__ == "__main__":
 
     board = Board.parse_instance()
-    board.print_test()
+    #board.print_test()
     problem = PipeMania(board, 0)
     
     goal = depth_first_tree_search(problem)
