@@ -414,21 +414,18 @@ class PipeMania(Problem):
                 elif pieces_specs[obj_left][1] == '1':
                     stack.append((row, col - 1))
                 else: return False
-
             # tem saida para a direita
             if pieces_specs[obj][1] == '1':
                 if obj_right == None: return False
                 elif pieces_specs[obj_right][0] == '1':
                     stack.append((row, col + 1))
                 else: return False
-
             # tem saida para cima
             if pieces_specs[obj][2] == '1':
                 if obj_up == None: return False
                 elif pieces_specs[obj_up][3] == '1':
                     stack.append((row - 1, col))
                 else: return False
-
             # tem saida para baixo
             if pieces_specs[obj][3] == '1':
                 if obj_down == None: return False
@@ -437,23 +434,6 @@ class PipeMania(Problem):
                 else: return False
 
         return len(visited) == state.board.n_rows * state.board.n_cols
-
-        """
-        for row in range(self.state.board.n_rows):
-            for col in range(self.state.board.n_cols):
-
-                obj = state.board.get_value(row,col)
-                obj_left, obj_right = state.board.adjacent_horizontal_values(row, col)
-                obj_up, obj_down = state.board.adjacent_vertical_values(row, col)
-
-                if not (pieces_specs[obj][0] == pieces_specs[obj_left][1] and \
-                    pieces_specs[obj][1] == pieces_specs[obj_right][0] and \
-                    pieces_specs[obj][2] == pieces_specs[obj_up][3] and \
-                    pieces_specs[obj][3] == pieces_specs[obj_down][2]):
-                    state.ver_depth = row * col
-                    return False
-        return True
-        """
 
     def h(self, node: Node):
         return -node.state.ver_depth
