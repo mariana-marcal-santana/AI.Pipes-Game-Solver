@@ -354,7 +354,6 @@ class PipeMania(Problem):
 
         row = state.depth // state.board.n_rows
         col = state.depth % state.board.n_cols
-        #print(row, col)
         # too much depth for the board
         if state.board.n_rows <= row or state.board.n_cols <= col:
             return []
@@ -384,8 +383,7 @@ class PipeMania(Problem):
         
         new_board.board[row][col][0] = piece
         new_board.board[row][col][1] = '0'
-        #new_board.print_test()
-        #print(state.depth + 1)
+
         return PipeManiaState(new_board, state.depth + 1)
 
     def goal_test(self, state: PipeManiaState):
@@ -394,15 +392,17 @@ class PipeMania(Problem):
         estão preenchidas de acordo com as regras do problema."""
 
         stack = [(0, 0)]
-        visited = set()
+        visited = np.zeros((state.board.n_rows, state.board.n_cols))
+        visited_count = 0
 
         while stack:
 
             row, col = stack.pop()
-            if (row, col) in visited:
+            if visited[row][col]:
                 continue
 
-            visited.add((row, col))
+            visited[row][col] = 1
+            visited_count += 1
 
             obj = state.board.get_value(row, col)
             obj_left, obj_right = state.board.adjacent_horizontal_values(row, col)
@@ -433,7 +433,7 @@ class PipeMania(Problem):
                     stack.append((row + 1, col))
                 else: return False
 
-        return len(visited) == state.board.n_rows * state.board.n_cols
+        return visited_count == state.board.n_rows * state.board.n_cols
 
     def h(self, node: Node):
         return -node.state.ver_depth
@@ -441,7 +441,7 @@ class PipeMania(Problem):
 if __name__ == "__main__":
 
     board = Board.parse_instance()
-    #board.print_test()
+
     problem = PipeMania(board, 0)
     
     goal = depth_first_tree_search(problem)
