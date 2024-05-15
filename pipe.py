@@ -155,6 +155,23 @@ class Board:
                 self.board[row][col][0] = "VE"
                 self.board[row][col][1] = 0
             
+            elif ((obj_right[1] == '0' and pieces_specs[obj_right[0]][0] == '1') and \
+                (obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '1')):
+                self.board[row][col][0] = "VB"
+                self.board[row][col][1] = 0
+            elif ((obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1') and \
+                (obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '0')):
+                self.board[row][col][0] = "VE"
+                self.board[row][col][1] = 0
+            elif ((obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1') and \
+                (obj_up[1] == '0' and pieces_specs[obj_up[0]][3] == '1')):
+                self.board[row][col][0] = "VC"
+                self.board[row][col][1] = 0
+            elif ((obj_right[1] == '0' and pieces_specs[obj_right[0]][0] == '1') and \
+                (obj_up[1] == '0' and pieces_specs[obj_up[0]][3] == '1')):
+                self.board[row][col][0] = "VD"
+                self.board[row][col][1] = 0
+            
         # check objs on borders and make deductions 
         # if obj is a straith pipe
         elif obj[0][0] == "L":
@@ -164,7 +181,16 @@ class Board:
             elif (col == 0 or col == self.n_cols - 1):
                 self.board[row][col][0] = "LV"
                 self.board[row][col][1] = 0
-        
+            
+            elif ((obj_left[1] == '0') and (pieces_specs[obj_left[0]][1] == '1')) or \
+                ((obj_right[1] == '0') and (pieces_specs[obj_right[0]][0] == '1')):
+                self.board[row][col][0] = "LH"
+                self.board[row][col][1] = 0    
+            elif ((obj_up[1] == '0') and (pieces_specs[obj_up[0]][3] == '1')) or \
+                ((obj_down[1] == '0') and (pieces_specs[obj_down[0]][2] == '1')):
+                self.board[row][col][0] = "LV"
+                self.board[row][col][1] = 0
+
         # if obj is a bifurcation pipe
         
         elif obj[0][0] == "B":
@@ -180,31 +206,45 @@ class Board:
             elif col == self.n_cols - 1:
                 self.board[row][col][0] = "BE"
                 self.board[row][col][1] = 0
-
-            elif (obj_left[1] == 0) and (obj_left[0] in ["FC","FB","FD","BD","VB","VD","LV"]):
-                print("entrou")
-                self.board[row][col][0] = "BE"
-                self.board[row][col][1] = 0
-            elif (obj_right[1] == 0) and (obj_right[0] in ["FC","FB","FE","BE","VC","VE","LV"]):
-                print("entrou")
-                self.board[row][col][0] = "BD"
-                self.board[row][col][1] = 0
-            elif (obj_up[1] == 0) and (obj_up[0] in ["FC","FE","FD","BC","VC","VD","LH"]):
-                print("entrou")
-                self.board[row][col][0] = "BB"
-                self.board[row][col][1] = 0
-            elif (obj_down[1] == 0) and (obj_down[0] in ["FB","BE","BD","VB","VE","LH"]):
-                print("entrou")
+            elif ((obj_left[1] == '0') and (pieces_specs[obj_left[0]][1] == '1')) and \
+                ((obj_right[1] == '0') and (pieces_specs[obj_right[0]][0] == '1')) and \
+                ((obj_up[1] == '0') and (pieces_specs[obj_up[0]][3] == '1')):
                 self.board[row][col][0] = "BC"
                 self.board[row][col][1] = 0
-            
-            
+            elif ((obj_left[1] == '0') and (pieces_specs[obj_left[0]][1] == '1')) and \
+                ((obj_right[1] == '0') and (pieces_specs[obj_right[0]][0] == '1')) and \
+                ((obj_down[1] == '0') and (pieces_specs[obj_down[0]][2] == '1')):
+                self.board[row][col][0] = "BB"
+                self.board[row][col][1] = 0
+            elif ((obj_left[1] == '0') and (pieces_specs[obj_left[0]][1] == '1')) and \
+                ((obj_up[1] == '0') and (pieces_specs[obj_up[0]][3] == '1')) and \
+                ((obj_down[1] == '0') and (pieces_specs[obj_down[0]][2] == '1')):
+                self.board[row][col][0] = "BE"
+                self.board[row][col][1] = 0
+            elif ((obj_right[1] == '0') and (pieces_specs[obj_right[0]][0] == '1')) and \
+                ((obj_up[1] == '0') and (pieces_specs[obj_up[0]][3] == '1')) and \
+                ((obj_down[1] == '0') and (pieces_specs[obj_down[0]][2] == '1')):
+                self.board[row][col][0] = "BD"
+                self.board[row][col][1] = 0
+
+        
         # if obj is a close pipe
         elif obj[0][0] == "F":
+            if (obj_right[1] == '0' and pieces_specs[obj_right[0]][0] == '1') :
+                self.board[row][col][0] = "FD"
+                self.board[row][col][1] = 0
+            elif (obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1') :
+                self.board[row][col][0] = "FE"
+                self.board[row][col][1] = 0
+            elif (obj_up[1] == '0' and pieces_specs[obj_up[0]][3] == '1') :
+                self.board[row][col][0] = "FC"
+                self.board[row][col][1] = 0
+            elif (obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '1') :
+                self.board[row][col][0] = "FB"
+                self.board[row][col][1] = 0
         
             if (row == 0 or row == self.n_rows - 1) \
                 and (obj_left[0][0] == "L" or obj_left[0][0] =="B"):
-            
                 self.board[row][col][0] = "FE"
                 self.board[row][col][1] = 0
             elif (row == 0 or row == self.n_cols - 1) \
@@ -252,19 +292,6 @@ class Board:
                     self.board[row][col][0] = "FE"
                     self.board[row][col][1] = 0
             
-            elif (obj_up[1] == 0 and obj_up[0] in ["BB","BE","BD","VB","VE","LV"]):
-                self.board[row][col][0] = "FC"
-                self.board[row][col][1] = 0
-            elif (obj_down[1] == 0 and obj_down[0] in ["BC","BE","BD","VC","VD","LV"]):
-                self.board[row][col][0] = "FB"
-                self.board[row][col][1] = 0
-            elif (obj_left[1] == 0 and obj_left[0] in ["BC","BB","BD","VB","VD","LH"]):
-                self.board[row][col][0] = "FE"
-                self.board[row][col][1] = 0
-            elif (obj_right[1] == 0 and obj_right[0] in ["BC","BB","BD","VC","VE","LH"]):
-                self.board[row][col][0] = "FD"
-                self.board[row][col][1] = 0
-          
     def run_deductions(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
