@@ -160,7 +160,7 @@ class Board:
                 self.board[row][col][0] = "VB"
                 self.board[row][col][1] = 0
             elif ((obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1') and \
-                (obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '0')):
+                (obj_down[1] == '0' and pieces_specs[obj_down[0]][2] == '1')):
                 self.board[row][col][0] = "VE"
                 self.board[row][col][1] = 0
             elif ((obj_left[1] == '0' and pieces_specs[obj_left[0]][1] == '1') and \
@@ -292,10 +292,11 @@ class Board:
                     self.board[row][col][0] = "FE"
                     self.board[row][col][1] = 0
             
-    def run_deductions(self):
+    def run_deductions(self, row: int = 0, col: int = 0):
+        """ Run deductions on the entire board """
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
-                self.get_deductions(i, j)
+                    self.get_deductions(i, j)
             
     @staticmethod
     def parse_instance():
@@ -410,7 +411,16 @@ class PipeMania(Problem):
         
         new_board.board[row][col][0] = piece
         new_board.board[row][col][1] = '0'
-
+        
+        new_board.get_deductions(row - 1, col) if row > 0 else None 
+        new_board.get_deductions(row + 1, col) if row < new_board.n_rows - 1 else None
+        new_board.get_deductions(row, col - 1) if col > 0 else None
+        new_board.get_deductions(row, col + 1) if col < new_board.n_cols - 1 else None
+        new_board.get_deductions(row - 1, col - 1) if row > 0 and col > 0 else None
+        new_board.get_deductions(row - 1, col + 1) if row > 0 and col < new_board.n_cols - 1 else None
+        new_board.get_deductions(row + 1, col - 1) if row < new_board.n_rows - 1 and col > 0 else None
+        new_board.get_deductions(row + 1, col + 1) if row < new_board.n_rows - 1 and col < new_board.n_cols - 1 else None
+        
         return PipeManiaState(new_board, state.depth + 1)
 
     def goal_test(self, state: PipeManiaState):
@@ -470,7 +480,8 @@ if __name__ == "__main__":
     board = Board.parse_instance()
 
     problem = PipeMania(board, 0)
-    
-    goal = depth_first_tree_search(problem)
 
+    start = time.time()
+    goal = depth_first_tree_search(problem)
+    print("Time:", time.time() - start)
     goal.state.board.print()
