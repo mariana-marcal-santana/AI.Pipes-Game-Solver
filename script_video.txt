@@ -2,9 +2,15 @@ Pela ordem dos tópicos do enunciado:
 1 - Breve descrição do problema (regras e objetivo):
 O jogo PIPEMANIA consiste numa grelha quadrada, em que cada posição contém uma peça rotativa e em que o objetivo é conectar
 todas as peças sem fugas.
-No contexto do projeto, este é um problema de procura, que tal como o nome indica procura a solução única da grelha em questão.
+No contexto do projeto, este é um problema de procura que, tal como o nome indica procura a solução única da grelha em questão.
 
 2 - Descrição da ideia geral para abordar o problema:
+A ideia geral consiste na leitura e processamento com inferências da grelha de jogo em Board, seguido por procura em profundidade
+primeiro da solução do problema. Nas funções relacionadas com a procura adotamos para a goal_test uma verificação com DFS para
+aferir se só existe um SCC na grelha, ou seja, se todas as peças estão conectadas e sem fugas. Em relação à função actions e 
+result, adotamos soluções que permitem minimizar o runtime do projeto, tais como: apenas gerar ações concordantes com células
+adjacentes que estejam corretas, de modo a minimizar o número de Nodes a criar e visitar e inferir sobre o Board sempre que se
+executa uma modificação no mesmo, nomeadamente no fim da função result.
 
 3 - Identificação do que é uma ação no contexto do problema:
 No contexto do problema uma ação consiste em fixar a orientação de uma determinada peça da grelha.
@@ -18,22 +24,20 @@ que estão com a orientação correta.
 4 - Descrição do que é o resultado de aplicar uma ação num estado:
 O resultado de aplicar uma ação num estado é um novo estado do problema em que o seu Board contém a peça na posição passada como
 argumento na orientação passada em argumento. Além disso, com vista a melhorar a eficiência da solução, repete-se a pesquisa por 
-novas inferências em relação às peças do tabuleiro que se encontram nas posições seguintes. Assim, de cada vez que é
+novas inferências em relação às peças do tabuleiro que se encontram nas posições seguintes.
 
 5 - Caso exista algum tipo de pre-processamento ou métodos de inferência, estes devem ser mencionados:
 Da mesma maneira que são procuradas inferências sobre cada Board depois de cada ação, no ínicio do problema, ainda antes de este
 ser definido tiramos conclusões sobre todas as peças da grelha passada como input. 
-A nossa lógica para inferências nas duas situções passa pela geração de 4 listas com as rotações possíveis de cada peça que sejam
-compatíveis com as peças que tenhamos a certeza da sua orientação à esquerda, direita, cima e baixo, respetivamente.
+A nossa lógica para inferências nas duas situções passa pela geração de 4 listas correspondentes às rotações possíveis de cada 
+peça que sejam compatíveis com as peças que tenhamos a certeza da sua orientação à esquerda, direita, cima e baixo, respetivamente.
 Seguidamente, as listas são intersetadas para saber as posições compatíveis com as peças de todos os lados e se houver apenas
 uma posição possível, orientamos a peça em questão para essa posição e marcamos-la como correta.
+Na primeira ronda de inferências, que é executada logo após a leitura da grelha, realizam-se inferencias para o board inteiro,
+o que difere das vezes que é chamada no result em que apenas infere para peças depois da peça que foi fixada.
 
 6 - Pequena avaliação experimental comparando diferentes procuras com as instâncias disponibilizadas:
 Para realizarmos uma avaliação experimental realizamos procuras com DFS, BFS, Greedy e A* searchs e registamos os tempos na tabela.
-
-
-
-
 
 7 - Identificação da procura final selecionada, quais as suas características (heurística, por exemplo), e motivo da escolha:
 Acabamos por escolher a depth first tree search porque foi a que obteve os melhores tempos com a nossa implementação.
