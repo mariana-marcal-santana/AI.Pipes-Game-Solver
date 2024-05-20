@@ -1,5 +1,39 @@
 Pela ordem dos tópicos do enunciado:
 1 - Breve descrição do problema (regras e objetivo):
-O jogo PIPEMANIA consiste numa grelha quadrada, em que cada posição contém uma peça rotativa e em que o objetivo é conectar todas as peças sem fugas.
+O jogo PIPEMANIA consiste numa grelha quadrada, em que cada posição contém uma peça rotativa e em que o objetivo é conectar
+todas as peças sem fugas.
+No contexto do projeto, este é um problema de procura, que tal como o nome indica procura a solução única da grelha em questão.
 
 2 - Descrição da ideia geral para abordar o problema:
+
+3 - Identificação do que é uma ação no contexto do problema:
+No contexto do problema uma ação consiste em fixar a orientação de uma determinada peça da grelha.
+A função "actions" retorna uma lista de ações possíveis para o Board que lhe é fornecido. 
+A lógica da função é a seguinte: em cada nível de profundidade da árvore de procura que está a ser gerada podemos mexer apenas
+a peça correspondente, que é calculada nas linhas (...) exemplo: para uma profundidade 0 estamos apenas a mexer na peça (0,0) e
+para profundidade 1 estamos a analisar a peça (0,1).
+A função gera uma lista de ações possíveis e compatíveis com as peças adjacentes à que estamos a analisar e que temos a certeza
+que estão com a orientação correta.
+
+4 - Descrição do que é o resultado de aplicar uma ação num estado:
+O resultado de aplicar uma ação num estado é um novo estado do problema em que o seu Board contém a peça na posição passada como
+argumento na orientação passada em argumento. Além disso, com vista a melhorar a eficiência da solução, repete-se a pesquisa por 
+novas inferências em relação às peças do tabuleiro que se encontram nas posições seguintes. Assim, de cada vez que é
+
+5 - Caso exista algum tipo de pre-processamento ou métodos de inferência, estes devem ser mencionados:
+Da mesma maneira que são procuradas inferências sobre cada Board depois de cada ação, no ínicio do problema, ainda antes de este
+ser definido tiramos conclusões sobre todas as peças da grelha passada como input. 
+A nossa lógica para inferências nas duas situções passa pela geração de 4 listas com as rotações possíveis de cada peça que sejam
+compatíveis com as peças que tenhamos a certeza da sua orientação à esquerda, direita, cima e baixo, respetivamente.
+Seguidamente, as listas são intersetadas para saber as posições compatíveis com as peças de todos os lados e se houver apenas
+uma posição possível, orientamos a peça em questão para essa posição e marcamos-la como correta.
+
+6 - Pequena avaliação experimental comparando diferentes procuras com as instâncias disponibilizadas:
+Para realizarmos uma avaliação experimental realizamos procuras com DFS, BFS, Greedy e A* searchs e registamos os tempos na tabela.
+
+
+
+
+
+7 - Identificação da procura final selecionada, quais as suas características (heurística, por exemplo), e motivo da escolha:
+Acabamos por escolher a depth first tree search porque foi a que obteve os melhores tempos com a nossa implementação.
