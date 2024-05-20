@@ -1,0 +1,5 @@
+Pela ordem dos tópicos do enunciado:
+1 - Breve descrição do problema (regras e objetivo):
+O jogo PIPEMANIA consiste numa grelha quadrada, em que cada posição contém uma peça rotativa e em que o objetivo é conectar todas as peças sem fugas.
+
+2 - Descrição da ideia geral para abordar o problema:
