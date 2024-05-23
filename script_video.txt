@@ -1,30 +1,28 @@
 Pela ordem dos tópicos do enunciado:
-1 - Breve descrição do problema (regras e objetivo):
-
-Vamos apresentar o nosso relatorio em formato video para o projeto de inteligencia artificial.
-O nosso grupo é o al25 e o meu nome é joao rodrigues com o numero 106221 e a minha colega é a mariana santana com o numero 106992.
-Como podemos ver na apresentaçao o input do programa é uma grelha quadrada, em que cada posição contém uma peça rotativa, em que o
-objetivo é conectar todas as peças sem fugas como na imagem de output.
-No contexto do projeto, este é um problema de procura que, tal como o nome indica procura a solução única da grelha em questão.
-
+1 - Breve descrição do problema (regras e objetivo): 
 2 - Descrição da ideia geral para abordar o problema:
 
-A ideia geral consiste na leitura e processamento com inferências da grelha de jogo, seguido por procura em profundidade
-da solução do problema. Nas funções relacionadas com a procura adotamos para a goal_test uma verificação com DFS para
-aferir se existe apenas um componente fortemente ligado na grelha, ou seja, se todas as peças estão conectadas e sem fugas. 
-Em relação à função actions e result, adotamos soluções que permitem minimizar o runtime do projeto, como vamos descrever mais adiante.
+Vamos apresentar o relatorio para o projeto de inteligencia artificial do nosso grupo, al 25.
+Como podemos ver na apresentaçao o input do programa é uma grelha quadrada, com peças rotativas, em que o
+objetivo é conectar todas as peças sem fugas como na se vê na imagem de output.
+No contexto do projeto, este é um problema de procura que, tal como o nome indica procura a solução única da grelha em questão.
+
+A nossa resolução consiste na leitura e processamento com inferências da grelha de jogo, seguido por uma procura em 
+profundidade pela solução do problema. 
+Para verificarmos se a solução foi encontrada usamos na funçao goal_test uma verificação com DFS para
+aferir se existe apenas um componente fortemente ligado na grelha, ou seja, se todas as peças estão bem conectadas. 
+Para as funções actions e result, adotamos soluções que minimizam o runtime do projeto, e que vamos passar a descrever.
 
 !!!!!!!!!!!!!!!!!!!!!!!!
 
 3 - Identificação do que é uma ação no contexto do problema:
 No contexto do problema uma ação consiste em fixar a orientação de uma determinada peça da grelha.
 
-A função "actions" retorna uma lista de ações possíveis para o Board que lhe é fornecido e a lógica da função é a seguinte: em cada 
-nível de profundidade da árvore de procura que está a ser gerada podemos mexer apenas na peça correspondente à mesma por exemplo:
-para uma profundidade 0 estamos apenas a mexer na peça (0,0) e para profundidade 1 estamos a analisar a peça (0,1), etc
-A função gera uma lista de ações possíveis e compatíveis com as peças adjacentes à que estamos a analisar e de que temos a certeza
-que têm orientação correta. Gerando apenas ações compatíveis estamos a minimizar o número de Nodes a criar e visitar, o que torna a
-implementação mais eficiente.
+A função "actions" retorna uma lista de ações possíveis para o Board sobre o qual atua e 
+em cada nível de profundidade da árvore de procura que está a ser gerada podemos apenas reorientar a peça correspondente à mesma por exemplo:
+para uma profundidade 0 estamos apenas a rodar a peça (0,0) e para profundidade 1, a peça (0,1), etc
+A função gera para a peça, uma lista de ações possíveis e compatíveis com as peças adjacentes à que estamos a analisar. 
+Gerando apenas ações compatíveis minimizamos o número de Nodes a criar e visitar, o que torna a implementação mais eficiente.
 
 !!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -39,12 +37,12 @@ novas inferências em relação às peças do tabuleiro que se encontram nas pos
 
 Da mesma maneira que procuramos inferências sobre cada Board depois de cada peça ser fixada, 
 no ínicio do problema tiramos também conclusões sobre as peças da grelha de input. 
-A nossa lógica para as inferências passa pela geração de 4 listas (uma para a esquerda, direita, cima e baixo,
-respetivamente) com as orientações possíveis, e compatíveis com as peças com orientação já fixada. 
+Para inferirmos sobre cada peça geramos 4 listas (respetivas a cada lado da peça) com as orientações possíveis 
+e compatíveis com as peças já fixadas. 
 
-Seguidamente, as listas são intersetadas para saber as orientações compatíveis com todos os lados e se houver apenas
+Seguidamente, intersetamos-las para obter as orientações compatíveis com todos os lados e se houver apenas
 uma posição possível, orientamos a peça em questão para essa posição e marcamos-la como correta.
-Na primeira ronda de inferências, que é executada logo após a leitura da grelha, realizam-se inferencias para o board inteiro,
+Na primeira ronda de inferências, que é executada logo após a leitura da grelha, realizam-se inferencias para todo o board,
 o que difere das vezes que é chamada na funçao result em que apenas se infere para peças de posições posteriores à da peça que 
 foi fixada.
 
