@@ -3,16 +3,8 @@
 # 106221 João Rodrigues
 
 from sys import stdin
-import time
-
 import numpy as np
-from search import (
-    Problem,
-    Node,
-    astar_search,
-    breadth_first_tree_search,
-    depth_first_tree_search,
-)
+from search import (Problem, Node, depth_first_tree_search)
 
 pieces_specs = {"FC": "0010", "FB": "0001", "FE": "1000", "FD": "0100",  # left rigth up down
                 "BC": "1110", "BB": "1101", "BE": "1011", "BD": "0111",
